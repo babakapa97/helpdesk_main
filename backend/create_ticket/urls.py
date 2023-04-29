@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import ticket_list, ticket_detail
+from rest_framework import routers
+from .api import TicketViewSet
 
+router = routers.DefaultRouter()
+router.register('api/tickets', TicketViewSet, 'tickets')
 
-urlpatterns = [
-
-]
+urlpatterns = router.urls

@@ -15,11 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from create_ticket import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/ticket_list', views.ticket_list),
-    # path('api/user_list', UserCreate.as_view(), name='user-list'),
-    path('api/tickets/<int:pk>/', views.ticket_detail),
+    path('', include('create_ticket.urls')),
+    path('', include('frontend.urls'))
+
 ]

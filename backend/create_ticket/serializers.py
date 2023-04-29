@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Ticket, User
+from .models import Ticket
 
 
 class TicketSerializer(serializers.ModelSerializer):
@@ -8,8 +8,10 @@ class TicketSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+'''
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
 
+'''
