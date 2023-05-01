@@ -1,19 +1,6 @@
 from django.db import models
 from django.conf import settings
 
-"""
-class User(models.Model):
-    first_name = models.CharField(max_length=20)
-    mid_name = models.CharField(max_length=20)
-    login = models.CharField(max_length=15)
-    password = models.CharField(max_length=8)
-    is_admin = models.BooleanField(default=False)
-
-
-def __str__(self):
-    #return self.id
-"""
-
 
 class Ticket(models.Model):
     title = models.CharField(max_length=100)
