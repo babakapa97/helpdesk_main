@@ -6,7 +6,7 @@ function TicketListComponent() {
     useEffect(() => {
         fetchData();
     }, []);
-    const apiURL = "http://127.0.0.1:8000/api/tickets/";
+    const apiURL = "http://127.0.0.1:8000/api/tickets";
     const fetchData = async () => {
         const response = await axios.get(apiURL,
             {'withCredentials': false});

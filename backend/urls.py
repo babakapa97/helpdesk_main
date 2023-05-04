@@ -23,9 +23,9 @@ from rest_framework_simplejwt.views import (
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('create_ticket.urls')),
+    # path('', include('create_ticket.urls')),
     path('api/token/obtain', TokenObtainPairView.as_view(), name='token_obtain'),
     path('api/token/refresh', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/user', views.user, name='user'),
-    # path('api/login', views.login, name='login'),
+    path('api/tickets', views.TicketViewSet.as_view({'get': 'list'}), name='ticket'),
 ]

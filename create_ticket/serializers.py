@@ -16,10 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class LoginRequestSerializer(Serializer):
-    model = User
-
-    username = CharField(required=True)
-    password = CharField(required=True)
-
-
+# class LoginRequestSerializer(Serializer):
+#     model = User
+#     username = CharField(required=True)
+#     password = CharField(required=True)
