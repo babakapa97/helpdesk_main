@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
@@ -51,6 +52,20 @@ class TicketViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
         queryset = Ticket.objects.all()
         ticket = get_object_or_404(queryset, pk=pk)
-        serializer = UserSerializer(user)
+        serializer = TicketSerializer(ticket)
         return Response(serializer.data)
 
+
+class TicketDetailView(RetrieveAPIView):
+        queryset = Ticket.objects.all()
+        serializer_class = TicketSerializer
+
+
+# class CategoryView(viewsets.ViewSet):
+#     queryset = Category.objects.all()
+#     serializer = CategorySerializer(Category)
+#
+#
+# class StatusView(viewsets.ViewSet):
+#     queryset = Status.objects.all()
+#     serializer = CategorySerializer(Category)

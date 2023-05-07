@@ -19,6 +19,7 @@ from create_ticket import views
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
+
 )
 
 urlpatterns = [
@@ -28,4 +29,5 @@ urlpatterns = [
     path('api/token/refresh', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/user', views.user, name='user'),
     path('api/tickets', views.TicketViewSet.as_view({'get': 'list'}), name='ticket'),
+    path('api/tickets/<int:pk>/', views.TicketDetailView.as_view(), name='ticket_detail'),
 ]

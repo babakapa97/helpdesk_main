@@ -1,4 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
 import TicketList from './pages/TicketList'
 import HNaviBar from './components/HNaviBar';
 import VNaviBar from './components/VNaviBar';
@@ -10,26 +11,30 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Stack from 'react-bootstrap/Stack';
 import LoginForm from "./pages/LoginForm"
+import Navigation from './components/Navigation';
+import TicketDetail from './pages/TicketDetail';
 
 function App() {
   return (
   <div>
-    
-    <Container fluid>
-    <Row><HNaviBar /></Row>
-    <Stack gap={3}>
+    <Stack gap={0}>
     <BrowserRouter>
-    <Row>
-     <Col sm={2}><VNaviBar /></Col>
+    <Container fluid>
+      <Row>
+      <Col sm={2}><VNaviBar /></Col>
+    <Col><Row><  Navigation /></Row>
     <Routes>
-    <Route path="/" element={<Col><LoginForm /></Col>} /> 
-    <Route path="/ticket_list" element={<Col><TicketList /></Col>} />
+    <Route path="/" element={<Row><LoginForm /></Row>} /> 
+    <Route path="/ticket_list" element={<Row><TicketList /></Row>} />
+    <Route path="/tickets/:id" element={<Row><TicketDetail /></Row>} />
     <Route path="/knowbase" element={<KnowBase />} />
     </Routes>
+    </Col>
     </Row>
+    </Container>
     </BrowserRouter>
     </Stack>
-    </Container>
+
   </div>
 
   );

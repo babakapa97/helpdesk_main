@@ -36,3 +36,19 @@
     transform: rotate(360deg);
   }
 }
+
+.create_button {
+  margin-right: 25px;
+}
+
+.card-body {
+
+  font-size: smaller;
+  font-weight: 200;
+}
+
+.card-footer {
+  
+  font-size: smaller;
+  font-weight: 100;
+}

@@ -128,13 +128,17 @@ STATIC_URL = '/static/'
 
 CSRF_COOKIE_NAME = "csrftoken"
 
+CORS_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
     'http://127.0.0.1:3306',
-    'http://localhost:3306'
+    'http://localhost:3306',
+    'http://127.0.0.1:8000'
+
 ]
 
 ROTATE_REFRESH_TOKENS = True
