@@ -43,24 +43,35 @@ function TicketDetail() {
         <Card.Text>
         {ticket.description}
         </Card.Text>
-        <Button variant="primary">Go somewhere</Button>
+        <Button variant="primary">Тык</Button>
       </Card.Body>
-      <Card.Footer className="text-muted">{ticket.created_at}</Card.Footer>
+      <Card.Footer className="text-muted">Вложения <a href={ticket.attach}>ссылка</a></Card.Footer>
+      <Card.Footer className="text-muted">Создано {ticket.created_at}</Card.Footer>
     </Card></Col>
     <Col xs={6} md={4}><>
-      <Form.Group className="mb-3">
+    <Form.Group className="mb-3">
         <Form.Label>Категория</Form.Label>
-        <Form.Control placeholder="Категория" disabled />
-      </Form.Group>
-      
-      <Form.Group className="mb-3">
-        <Form.Label>Статус</Form.Label>
         <Form.Select disabled>
-          <option>{ticket.status}</option>
+          <option>{ticket.category.name}</option>
         </Form.Select>
       </Form.Group>
       <Form.Group className="mb-3">
-        <Form.Check type="checkbox" label="Can't check this" disabled />
+        <Form.Label>Статус</Form.Label>
+        <Form.Select disabled>
+          <option>{ticket.status.name}</option>
+        </Form.Select>
+      </Form.Group>
+      <Form.Group className="mb-3">
+        <Form.Label>Автор</Form.Label>
+        <Form.Select disabled>
+          <option>{ticket.author.username}</option>
+        </Form.Select>
+      </Form.Group>
+      <Form.Group className="mb-3">
+        <Form.Label>Назначено</Form.Label>
+        <Form.Select disabled>
+          <option>{ticket.agent}</option>
+        </Form.Select>
       </Form.Group>
     </></Col>
     </Row>

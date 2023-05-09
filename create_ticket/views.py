@@ -6,9 +6,11 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .serializers import UserSerializer, TicketSerializer
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from django.shortcuts import get_object_or_404
-from .models import Ticket
+from .models import Ticket, Category, Status
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 # from django.contrib.auth import authenticate, login
 
@@ -61,11 +63,70 @@ class TicketDetailView(RetrieveAPIView):
         serializer_class = TicketSerializer
 
 
-# class CategoryView(viewsets.ViewSet):
-#     queryset = Category.objects.all()
-#     serializer = CategorySerializer(Category)
+# список словаря Категории
+def category_list(request):
+    categories = Category.objects.all()
+    data = [{'category_id': c.category_id, 'name': c.name} for c in categories]
+    return JsonResponse(data, safe=False)
+
+
+# список словаря Статус
+def status_list(request):
+    categories = Status.objects.all()
+    data = [{'status_id': c.status_id, 'name': c.name} for c in categories]
+    return JsonResponse(data, safe=False)
+
+
+# POST-метод для Tickets
+# @csrf_exempt
+# @permission_classes([AllowAny])
+# def create_ticket(request):
+#     if request.method == 'POST':
+#        # print(request.data)
+#         title = request.POST.get('title')
+#         description = request.POST.get('description')
+#         category = request.POST.get('category_id')
+#         status = request.POST.get('status_id')
+#         author = request.POST.get('author')
 #
+#         # сохраняем тикет в базу данных
+#         ticket = Ticket(title=title, description=description, category=category, status=status, author=author)
+#         ticket.save()
 #
-# class StatusView(viewsets.ViewSet):
-#     queryset = Status.objects.all()
-#     serializer = CategorySerializer(Category)
+#         return JsonResponse({'status': 'success', 'ticket_id': ticket.id})
+#     else:
+#         return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+# @csrf_exempt
+# def post(self, request):
+#     serializer = TicketSerializer(data=request.data)
+#     if serializer.is_valid():
+#         serializer.save()
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
+#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def create_ticket(request):
+    print(request.data)
+    serializer = TicketSerializer(data=request.data)
+    print(serializer.initial_data)
+    if serializer.is_valid():
+        serializer.save()
+        return JsonResponse({'status': 'success', 'ticket_id': serializer.instance.id})
+    else:
+        print(serializer.errors)
+        return JsonResponse({'status': 'error', 'message': 'Invalid data'}, status=400)
+
+
+
+# @api_view(['POST'])
+# def create_ticket(request):
+#     print(request.data)
+#     serializer = TicketSerializer(data=request.data)
+#     if serializer.is_valid():
+#         serializer.save()
+#         return Response(serializer.data, status=201)
+#     return Response(serializer.errors, status=400)
+

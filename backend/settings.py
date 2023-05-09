@@ -113,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Irkutsk'
 
 USE_I18N = True
 
@@ -127,6 +127,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 CSRF_COOKIE_NAME = "csrftoken"
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
 
 CORS_ALLOW_ALL = True
 CORS_ORIGIN_ALLOW_ALL = True
@@ -143,3 +144,21 @@ CORS_ALLOWED_ORIGINS = [
 
 ROTATE_REFRESH_TOKENS = True
 BLACKLIST_AFTER_ROTATION = True
+
+# LOGGING = {
+#     "version": 1,
+#     "disable_existing_loggers": False,
+#     "handlers": {
+#         "console": {
+#             "class": "logging.StreamHandler",
+#         },
+#     },
+#
+#     "loggers": {
+#         "django": {
+#             "handlers": ["console"],
+#             "level": os.getenv("DJANGO_LOG_LEVEL", "DEBUG"),
+#             "propagate": True,
+#         },
+#     }
+# }

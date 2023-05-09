@@ -47,8 +47,8 @@ function TicketList() {
                         <td><Link to={`/tickets/${ticket.id}`}>{ticket.title}</Link></td>
                         <td>{ticket.description}</td>
                         <td>{ticket.author.username}</td>
-                        <td>{ticket.status}</td>
-                        <td>{ticket.category}</td>
+                        <td>{ticket.status.name}</td>
+                        <td>{ticket.category.name}</td>
                         <td>{ticket.agent}</td>
                         <td>{ticket.created_at}</td>
                         <td>{ticket.updated_at}</td>

@@ -1,6 +1,22 @@
 
 from django.contrib import admin
-from .models import Ticket
+from .models import Ticket, Category, Status
+
+
+class StatusAdmin(admin.ModelAdmin):
+    list_display = ('status_id', 'name')
+
+    def get_form(self, request, obj=None, change=False, **kwargs):
+        form = super(StatusAdmin, self).get_form(request, obj, **kwargs)
+        return form
+
+
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('category_id', 'name')
+
+    def get_form(self, request, obj=None, change=False, **kwargs):
+        form = super(CategoryAdmin, self).get_form(request, obj, **kwargs)
+        return form
 
 
 class TicketAdmin(admin.ModelAdmin):
@@ -22,3 +38,5 @@ class TicketAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Ticket, TicketAdmin)
+admin.site.register(Category, CategoryAdmin)
+admin.site.register(Status, StatusAdmin)
