@@ -46,10 +46,18 @@ class TicketViewSet(viewsets.ViewSet):
     # authentication_classes = [JWTAuthentication]
     permission_classes = [AllowAny]
 
+    # def list(self, request):
+    #     queryset = Ticket.objects.all()
+    #     serializer = TicketSerializer(queryset, many=True)
+    #     return Response(serializer.data)
+
     def list(self, request):
         queryset = Ticket.objects.all()
-        serializer = TicketSerializer(queryset, many=True)
-        return Response(serializer.data)
+        serializer = TicketSerializer(queryset, many=True, context={'request': request})
+        data = serializer.data
+        for idx, ticket_data in enumerate(data):
+            ticket_data['id'] = queryset[idx].id
+        return Response(data)
 
     def retrieve(self, request, pk=None):
         queryset = Ticket.objects.all()
