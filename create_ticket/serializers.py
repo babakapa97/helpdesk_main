@@ -93,8 +93,7 @@ class TicketSerializer(serializers.Serializer):
         return ticket
 
 
-
-# class LoginRequestSerializer(Serializer):
-#     model = User
-#     username = CharField(required=True)
-#     password = CharField(required=True)
+class LoginRequestSerializer(Serializer):
+    model = User
+    username = CharField(required=True)
+    password = CharField(required=True)

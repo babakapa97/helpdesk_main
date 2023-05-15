@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Card, Button, Container, Row, Col, Form } from 'react-bootstrap';
+import { Card, Button, Container, Row, Col, Form, Stack } from 'react-bootstrap';
+import VNaviBar from '../components/VNaviBar';
+import Navigation from '../components/Navigation';
 
 
 function TicketDetail() {
   const [ticket, setTicket] = useState(null);
   const [loading, setLoading] = useState(true);
   let { id } = useParams();
+
 
   useEffect(() => {
     const fetchTicket = async () => {
@@ -33,6 +36,12 @@ function TicketDetail() {
 
   return (
     <div>
+      <Stack gap={0}>
+          <Container fluid>
+            <Row>
+              <Col sm={2}><VNaviBar /></Col>
+              <Col>
+                <Row><Navigation /></Row>  
       <Container>
       <Row>
         <Col>
@@ -76,6 +85,10 @@ function TicketDetail() {
     </></Col>
     </Row>
     </Container>
+    </Col>
+    </Row>
+    </Container>
+    </Stack>
     </div>
   );
 }

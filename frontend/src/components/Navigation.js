@@ -1,18 +1,10 @@
-import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-import { Breadcrumb } from 'react-bootstrap';
-import Stack from 'react-bootstrap/Stack';
+import { Breadcrumb, Modal, Button, Container, Form, Nav, Navbar } from 'react-bootstrap';
 import CreateTicket from '../components/CreateTicket'
 import { useState } from 'react';
-import { Modal } from 'react-bootstrap';
-
+import WhoLoggedIn from './WhoLoggedIn'
 
   
-function Navigation() {
+function Navigation({user_id}) {
 
   const [showModal, setShowModal] = useState(false);
 
@@ -48,15 +40,7 @@ function Navigation() {
           </Button>
         </Modal.Footer>
       </Modal>
-          <Form className="d-flex">
-            <Form.Control
-              type="search"
-              placeholder="Поиск"
-              className="me-2"
-              aria-label="Search"
-            />
-            <Button variant="outline-success">Поиск</Button>
-          </Form>
+      <WhoLoggedIn user_id={user_id} />
         </Navbar.Collapse>
       </Container>
     </Navbar>

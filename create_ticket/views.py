@@ -10,11 +10,21 @@ from rest_framework import viewsets, status
 from django.shortcuts import get_object_or_404
 from .models import Ticket, Category, Status
 from django.http import JsonResponse
+from .serializers import LoginRequestSerializer
 from django.views.decorators.csrf import csrf_exempt
-
 # from django.contrib.auth import authenticate, login
 
 
+
+@api_view()
+@permission_classes([IsAuthenticated])
+# @authentication_classes([JWTAuthentication])
+def user(request: Request):
+    return Response({
+        'data': UserSerializer(request.user).data
+    })
+
+# метод для проверки логина пароля, но он тут уже нафиг не нужон
 # @api_view(['POST'])
 # @permission_classes([AllowAny])
 # def login(request: Request):
@@ -23,33 +33,17 @@ from django.views.decorators.csrf import csrf_exempt
 #         authenticated_user = authenticate(**serializer.validated_data)
 #         if authenticated_user is not None:
 #             login(request, authenticated_user)
-#             return Response({'status': 'Success'})
+#             return Response({'status': 'Success'}, status=200)
 #         else:
 #             return Response({'error': 'Invalid credentials'}, status=403)
 #     else:
 #         return Response(serializer.errors, status=400)
 
 
-@api_view()
-@permission_classes([IsAuthenticated])
-@authentication_classes([JWTAuthentication])
-def user(request: Request):
-    return Response({
-        'data': UserSerializer(request.user).data
-    })
-
-
+# GET метод для просмотра тикетов
 class TicketViewSet(viewsets.ViewSet):
-    """
-    A simple ViewSet for listing or retrieving tickets.
-    """
     # authentication_classes = [JWTAuthentication]
-    permission_classes = [AllowAny]
-
-    # def list(self, request):
-    #     queryset = Ticket.objects.all()
-    #     serializer = TicketSerializer(queryset, many=True)
-    #     return Response(serializer.data)
+    permission_classes = [IsAuthenticated]
 
     def list(self, request):
         queryset = Ticket.objects.all()
@@ -66,6 +60,7 @@ class TicketViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 
+# GET метод для просмотра деталей тикета
 class TicketDetailView(RetrieveAPIView):
         queryset = Ticket.objects.all()
         serializer_class = TicketSerializer
@@ -85,35 +80,7 @@ def status_list(request):
     return JsonResponse(data, safe=False)
 
 
-# POST-метод для Tickets
-# @csrf_exempt
-# @permission_classes([AllowAny])
-# def create_ticket(request):
-#     if request.method == 'POST':
-#        # print(request.data)
-#         title = request.POST.get('title')
-#         description = request.POST.get('description')
-#         category = request.POST.get('category_id')
-#         status = request.POST.get('status_id')
-#         author = request.POST.get('author')
-#
-#         # сохраняем тикет в базу данных
-#         ticket = Ticket(title=title, description=description, category=category, status=status, author=author)
-#         ticket.save()
-#
-#         return JsonResponse({'status': 'success', 'ticket_id': ticket.id})
-#     else:
-#         return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
-
-# @csrf_exempt
-# def post(self, request):
-#     serializer = TicketSerializer(data=request.data)
-#     if serializer.is_valid():
-#         serializer.save()
-#         return Response(serializer.data, status=status.HTTP_201_CREATED)
-#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
+# POST метод для добавления тикета
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def create_ticket(request):
@@ -129,12 +96,4 @@ def create_ticket(request):
 
 
 
-# @api_view(['POST'])
-# def create_ticket(request):
-#     print(request.data)
-#     serializer = TicketSerializer(data=request.data)
-#     if serializer.is_valid():
-#         serializer.save()
-#         return Response(serializer.data, status=201)
-#     return Response(serializer.errors, status=400)
 
