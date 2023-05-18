@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Form, Button, Alert } from 'react-bootstrap';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 
 function Login({ setUserId }) {
+  const token = localStorage.getItem('accessToken');
   const [username, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -12,20 +13,25 @@ function Login({ setUserId }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
 
-    try {
-      const response = await axios.post('http://localhost:8000/api/token/', { username: username, password: password });
-      const { access } = response.data;
-      localStorage.setItem('accessToken', access);
-      const decodedToken = jwtDecode(access);
+    if (token) {
+      const decodedToken = jwtDecode(token);
       const userId = decodedToken.user_id;
       setUserId(userId);
-      // console.log(access);
-      navigate('/ticket_list/', { replace: true });
-    } catch (error) {
-      console.log(error);
-      setError('Неправильный логин или пароль');
+      navigate('/tickets/', { replace: true });
+    } else {
+      try {
+        const response = await axios.post('http://localhost:8000/api/token/', { username, password });
+        const { access } = response.data;
+        localStorage.setItem('accessToken', access);
+        const decodedToken = jwtDecode(access);
+        const userId = decodedToken.user_id;
+        setUserId(userId);
+        navigate('/tickets/', { replace: true });
+      } catch (error) {
+        console.log(error);
+        setError('Неправильный логин или пароль');
+      }
     }
   };
 
@@ -50,6 +56,6 @@ function Login({ setUserId }) {
       </Form>
     </div>
   );
-};
+}
 
 export default Login;

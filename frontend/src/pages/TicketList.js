@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Table from 'react-bootstrap/Table';
-import { Container, Row, Stack, Col } from 'react-bootstrap';
+import { Container, Row, Stack, Col, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import VNaviBar from '../components/VNaviBar';
 import Navigation from '../components/Navigation';
@@ -9,7 +9,7 @@ import SearchBar from '../components/SearchBar';
 
 axios.defaults.withCredentials = true;
 
-function TicketList({user_id}) {
+function TicketList({user_id}, {forceUpdate}) {
     const [tickets, setTickets] = useState([]);
     const access = localStorage.getItem('accessToken');
     console.log(user_id);
@@ -40,17 +40,21 @@ function TicketList({user_id}) {
             <Stack gap={0}>
                 <Container fluid>
                     <Row>
+                        
                         <Col sm={2}><VNaviBar /></Col>
                         <Col>
-                            <Row><Navigation user_id={user_id} /></Row>
-                            <Row><SearchBar /></Row>
+                        <Card>
+                        <Card.Header as="h6"><Row><Navigation user_id={user_id} /></Row> </Card.Header>
+                        <Card.Body><Row><SearchBar user_id={user_id} forceUpdate={forceUpdate}/></Row>
+                        </Card.Body>
+                            </Card>
                             <Container fluid>
-                                <Table striped bordered hover>
+                                <Table striped bordered hover className='tab'>
                                     <thead>
                                         <tr>
                                             <th>№</th>
                                             <th>Название</th>
-                                            <th>Описание</th>
+                                            {/* <th>Описание</th> */}
                                             <th>Автор</th>
                                             <th>Статус</th>
                                             <th>Категория</th>
@@ -62,9 +66,9 @@ function TicketList({user_id}) {
                                     <tbody>
                                         {tickets.map(ticket => (
                                             <tr key={ticket.id}>
-                                                <td><Link to={`/tickets/${ticket.id}`}>{ticket.id}</Link></td>
+                                                <td className='ticket-link'><Link to={`/tickets/${ticket.id}`}>{ticket.id}</Link></td>
                                                 <td><Link to={`/tickets/${ticket.id}`}>{ticket.title}</Link></td>
-                                                <td>{ticket.description}</td>
+                                                {/* <td>{ticket.description}</td> */}
                                                 <td>{ticket.author.username}</td>
                                                 <td>{ticket.status.name}</td>
                                                 <td>{ticket.category.name}</td>

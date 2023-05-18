@@ -27,6 +27,7 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/user/', views.user, name='user'),
+    path('api/user/<int:pk>/', views.UserDetailView.as_view(), name='user_detail'),
     path('api/tickets/', views.TicketViewSet.as_view({'get': 'list'}), name='ticket'),
     path('api/tickets/<int:pk>/', views.TicketDetailView.as_view(), name='ticket_detail'),
 ]

@@ -11,7 +11,6 @@ const RequireAuth = ({children, setUserId }) => {
     const decodedToken = jwtDecode(token);
     const userId = decodedToken.user_id;
     setUserId(userId);
-
     }
 
     if(!isAuthenticated) {

@@ -1,11 +1,33 @@
-import { Button, Container, Form, Nav, Navbar } from 'react-bootstrap';
+import { Button, Container, Form, Nav, Navbar, Modal, Card } from 'react-bootstrap';
+import CreateTicket from './CreateTicket';
+import { useState } from 'react';
 
-
-function SearchBar() {
-
+function SearchBar({ user_id, forceUpdate }) {
+    const [showModal, setShowModal] = useState(false);
+  
+    const handleClose = () => setShowModal(false);
+    const handleShow = () => setShowModal(true);
+  
+  
     return (
-        <Navbar bg="light" expand="lg">
-            <Container fluid >
+      <Navbar bg="white" expand="lg" className='search-bar'>
+        <Container fluid>
+          <Button className="create_button" variant="primary" onClick={handleShow}>
+            Создать заявку
+          </Button>
+          <Modal show={showModal} onHide={handleClose}>
+            <Modal.Header closeButton>
+              <Modal.Title>Создать заявку</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <CreateTicket user_id={user_id} forceUpdate={forceUpdate} />
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleClose}>
+                Закрыть
+              </Button>
+            </Modal.Footer>
+          </Modal>
                 <Navbar.Toggle aria-controls="navbarScroll" />
                 <Navbar.Collapse id="navbarScroll">
                     <Nav
