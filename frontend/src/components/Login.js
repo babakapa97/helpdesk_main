@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Form, Button, Alert } from 'react-bootstrap';
+import { Form, Button, Alert, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 
@@ -37,8 +37,11 @@ function Login({ setUserId }) {
 
   return (
     <div className="container">
-      <h2>Вход</h2>
-      <Form onSubmit={handleSubmit}>
+      <Card className="text-center">
+      <Card.Header><h2>Вход</h2>
+      <p>В систему технической поддержки ГБУЗ «Республиканский медицинский информационно-аналитический центр»</p>
+      </Card.Header>
+      <Card.Body><Form onSubmit={handleSubmit}>
         {error && <Alert variant="danger">{error}</Alert>}
         <Form.Group controlId="formBasicEmail">
           <Form.Label>Логин</Form.Label>
@@ -54,6 +57,8 @@ function Login({ setUserId }) {
           Войти
         </Button>
       </Form>
+      </Card.Body>
+      </Card>
     </div>
   );
 }

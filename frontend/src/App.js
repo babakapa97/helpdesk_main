@@ -10,6 +10,7 @@ import KnowBase from './pages/KnowBase'
 import RequireAuth from './components/RequireAuth';
 import { useState, useReducer } from 'react';
 import jwtDecode from 'jwt-decode';
+import EmptyPageNotFound from './pages/EmptyNotFound';
 
 
 
@@ -36,6 +37,13 @@ function App() {
                   <TicketDetail user_id={user_id} />
                 </RequireAuth>
               </Row>} />
+              <Route path="knowbase/*" element={
+              <Row>
+                <RequireAuth setUserId={setUserId}>
+                  <KnowBase user_id={user_id} />
+                </RequireAuth>
+              </Row>} />
+              <Route path='*' element={<EmptyPageNotFound/>} />
           </Routes>
         </Container>
       </BrowserRouter>

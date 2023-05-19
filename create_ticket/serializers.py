@@ -52,7 +52,7 @@ class TicketCreateSerializer(WritableNestedModelSerializer, serializers.ModelSer
 
     class Meta:
         model = Ticket
-        fields = ('id', 'title', 'description', 'status', 'category', 'author', 'created_at', 'updated_at')
+        fields = ('id', 'title', 'description', 'status', 'category', 'author', 'created_at', 'updated_at', 'agent', 'attach')
 
 
 def to_representation(self, instance):
@@ -82,8 +82,17 @@ def create(self, validated_data):
 
     return ticket
 
+
+def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
+
+
 #сериалайзер для просмотра тикетов
 class TicketViewSerializer(serializers.ModelSerializer):
+    agent = UserSerializer()
     author = UserSerializer()
     category = CategorySerializer()
     status = StatusSerializer()
@@ -94,7 +103,7 @@ class TicketViewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ticket
-        fields = ('id', 'title', 'description', 'status', 'category', 'author', 'created_at', 'updated_at')
+        fields = ('id', 'title', 'description', 'status', 'category', 'author', 'created_at', 'updated_at', 'agent', 'attach')
 
 
 

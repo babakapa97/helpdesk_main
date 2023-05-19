@@ -36,10 +36,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'create_ticket',
     'rest_framework',
     'corsheaders',
     'rest_framework_simplejwt',
+    'create_ticket',
+    'knowbase'
 ]
 
 MIDDLEWARE = [

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Table from 'react-bootstrap/Table';
-import { Container, Row, Stack, Col, Card } from 'react-bootstrap';
+import { Container, Row, Stack, Col, Card, Table } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import VNaviBar from '../components/VNaviBar';
 import Navigation from '../components/Navigation';
@@ -9,10 +8,9 @@ import SearchBar from '../components/SearchBar';
 
 axios.defaults.withCredentials = true;
 
-function TicketList({user_id}, {forceUpdate}) {
+function TicketList({user_id}) {
     const [tickets, setTickets] = useState([]);
     const access = localStorage.getItem('accessToken');
-    console.log(user_id);
 
     useEffect(() => {
         axios.get('http://127.0.0.1:8000/api/tickets/', {
@@ -45,7 +43,7 @@ function TicketList({user_id}, {forceUpdate}) {
                         <Col>
                         <Card>
                         <Card.Header as="h6"><Row><Navigation user_id={user_id} /></Row> </Card.Header>
-                        <Card.Body><Row><SearchBar user_id={user_id} forceUpdate={forceUpdate}/></Row>
+                        <Card.Body><Row><SearchBar user_id={user_id} /></Row>
                         </Card.Body>
                             </Card>
                             <Container fluid>
@@ -72,7 +70,7 @@ function TicketList({user_id}, {forceUpdate}) {
                                                 <td>{ticket.author.username}</td>
                                                 <td>{ticket.status.name}</td>
                                                 <td>{ticket.category.name}</td>
-                                                <td>{ticket.agent}</td>
+                                                <td>{ticket.agent && ticket.agent.username}</td>
                                                 <td>{ticket.created_at}</td>
                                                 <td>{ticket.updated_at}</td>
                                             </tr>

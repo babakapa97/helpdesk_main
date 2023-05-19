@@ -16,12 +16,13 @@ function VNaviBar() {
           height="44"
           className="brandlogo"
           alt="logo"
+          href="/tickets"
         />
       </Navbar.Brand>   
       <Nav defaultActiveKey="/tickets" className="flex-column"> 
       <Nav.Link href="/tickets" className='l1'><FcViewDetails/> Заявки</Nav.Link> 
-      <Nav.Link eventKey="/knowbase" className='l2'><FcQuestions/> База знаний</Nav.Link>
-      <Nav.Link eventKey="/manage" className='l3'><FcAutomatic/> Менеджмент</Nav.Link>
+      <Nav.Link href="/knowbase" className='l2'><FcQuestions/> База знаний</Nav.Link>
+      <Nav.Link href="http://localhost:8000/admin" className='l3'><FcAutomatic/> Менеджмент</Nav.Link>
       </Nav> 
     </Container>
   );
