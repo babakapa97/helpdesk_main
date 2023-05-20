@@ -19,7 +19,7 @@ function CreateTicket() {
 
   //подгрузка категорий из БД
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/api/categories/') 
+    axios.get('http://127.0.0.1:8000/api/categories/')
       .then(response => {
         setCategories(response.data);
       })
@@ -58,10 +58,10 @@ function CreateTicket() {
     console.log(formData);
     // отправляем данные на сервер
     axios.post('http://localhost:8000/api/tickets/create/',
-      { 
+      {
         headers: {
-        'Authorization': `Bearer ${access}`, 
-      },
+          'Authorization': `Bearer ${access}`,
+        },
 
         title: formData.title,
 
@@ -100,7 +100,7 @@ function CreateTicket() {
       span: 16,
     },
   };
-  
+
   /* eslint-disable no-template-curly-in-string */
   const validateMessages = {
     required: '${label} is required!',
@@ -121,66 +121,41 @@ function CreateTicket() {
   return (
     <>
       <Form
-    {...layout}
-    name="nest-messages"
-    onFinish={onFinish}
-    style={{
-      maxWidth: 600,
-    }}
-    validateMessages={validateMessages}
-  >
-    <Form.Item
-      name={['user', 'name']}
-      label="Name"
-      rules={[
-        {
-          required: true,
-        },
-      ]}
-    >
-      <Input />
-    </Form.Item>
-    <Form.Item
-      name={['user', 'email']}
-      label="Email"
-      rules={[
-        {
-          type: 'email',
-        },
-      ]}
-    >
-      <Input />
-    </Form.Item>
-    <Form.Item
-      name={['user', 'age']}
-      label="Age"
-      rules={[
-        {
-          type: 'number',
-          min: 0,
-          max: 99,
-        },
-      ]}
-    >
-      <InputNumber />
-    </Form.Item>
-    <Form.Item name={['user', 'website']} label="Website">
-      <Input />
-    </Form.Item>
-    <Form.Item name={['user', 'introduction']} label="Introduction">
-      <Input.TextArea />
-    </Form.Item>
-    <Form.Item
-      wrapperCol={{
-        ...layout.wrapperCol,
-        offset: 8,
-      }}
-    >
-      <Button type="primary" htmlType="submit">
-        Submit
-      </Button>
-    </Form.Item>
-  </Form>
+        {...layout}
+        name="nest-messages"
+        onFinish={onFinish}
+        style={{
+          maxWidth: 600,
+        }}
+        validateMessages={validateMessages}
+      >
+        <Form.Item
+          name={['title', 'title']}
+          label="Название заявки"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Input />
+          </Form.Item>
+          <Form.Item name={['description', 'description']} label="Описание">
+            <Input.TextArea />
+          </Form.Item>
+          <Form.Item
+            wrapperCol={{
+              ...layout.wrapperCol,
+              offset: 8,
+            }}
+          >
+            <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Отправить
+            </Button>
+            </Form.Item>
+          </Form.Item>
+      </Form>
     </>
   );
 }
