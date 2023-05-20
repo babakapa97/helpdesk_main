@@ -23,7 +23,7 @@ def user(request: Request):
 
 # GET метод для просмотра тикетов
 class TicketViewSet(viewsets.ViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def list(self, request):
         queryset = Ticket.objects.all()

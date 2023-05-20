@@ -1,56 +1,97 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
+import { FileOutlined, PieChartOutlined, UserOutlined, DesktopOutlined, TeamOutlined } from '@ant-design/icons';
+import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import { useState } from 'react';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Login from './components/Login';
+import logo from './components/img/logo_rmiac.png'
 import TicketList from './pages/TicketList';
-import TicketDetail from './pages/TicketDetail';
 import KnowBase from './pages/KnowBase'
-import RequireAuth from './components/RequireAuth';
-import { useState, useReducer } from 'react';
-import jwtDecode from 'jwt-decode';
-import EmptyPageNotFound from './pages/EmptyNotFound';
+import TicketDetail from './pages/TicketDetail'
+import Home from './pages/Home';
 
+const { Header, Content, Footer, Sider } = Layout;
 
-
-function App() {
-
-  const [user_id, setUserId] = useState(null);
-
-  return (
-    <div>
-
-      <BrowserRouter>
-        <Container fluid>
-          <Routes>
-            <Route path="/" element={<Row><Login setUserId={setUserId} /></Row>} />
-            <Route path="tickets/*" element={
-              <Row>
-                <RequireAuth setUserId={setUserId} >
-                  <TicketList user_id={user_id} />
-                </RequireAuth>
-              </Row>} />
-            <Route path="tickets/:id" element={
-              <Row>
-                <RequireAuth setUserId={setUserId}>
-                  <TicketDetail user_id={user_id} />
-                </RequireAuth>
-              </Row>} />
-              <Route path="knowbase/*" element={
-              <Row>
-                <RequireAuth setUserId={setUserId}>
-                  <KnowBase user_id={user_id} />
-                </RequireAuth>
-              </Row>} />
-              <Route path='*' element={<EmptyPageNotFound/>} />
-          </Routes>
-        </Container>
-      </BrowserRouter>
-
-    </div>
-
-  );
+function getItem(label, key, icon, children) {
+  return {
+    key,
+    icon,
+    children,
+    label,
+  };
 }
-console.log();
+const items = [
+  getItem('Option 1', '1', <PieChartOutlined />),
+  getItem('Option 2', '2', <DesktopOutlined />),
+  getItem('User', 'sub1', <UserOutlined />, [
+    getItem('Tom', '3'),
+    getItem('Bill', '4'),
+    getItem('Alex', '5'),
+  ]),
+  getItem('Team', 'sub2', <TeamOutlined />, [getItem('Team 1', '6'), getItem('Team 2', '8')]),
+  getItem('Files', '9', <FileOutlined />),
+];
+const App = () => {
+  const [collapsed, setCollapsed] = useState(false);
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken();
+  return (
+    <BrowserRouter>
+    <Layout
+      style={{
+        minHeight: '100vh',
+      }}
+    >
+      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+      <div className={`demo-logo-vertical ${collapsed ? 'logo-collapsed' : ''}`}>
+            <img src={logo} alt="Logo" style={{ width: '95%', height: 'auto' }} />
+          </div>
+        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+      </Sider>
+      <Layout>
+        <Header
+          style={{
+            padding: 0,
+            background: colorBgContainer,
+          }}
+        />
+        <Content
+          style={{
+            margin: '0 16px',
+          }}
+        >
+          <Breadcrumb
+            style={{
+              margin: '16px 0',
+            }}
+          >
+            <Breadcrumb.Item>User</Breadcrumb.Item>
+            <Breadcrumb.Item>Bill</Breadcrumb.Item>
+          </Breadcrumb>
+          <div
+            style={{
+              padding: 24,
+              minHeight: 360,
+              background: colorBgContainer,
+            }}
+          >
+            <Routes>
+            <Route path="/" element={<Home />}></Route>
+            <Route path="/tickets" element={<TicketList />}></Route>
+            <Route path="/tickets/:id" element={<TicketDetail />}></Route> 
+            <Route path="/knowbase" element={<KnowBase />}></Route>
+            </Routes>
+          </div>
+        </Content>
+        <Footer
+          style={{
+            textAlign: 'center',
+          }}
+        >
+          Ant Design ©2023 Created by Ant UED
+        </Footer>
+      </Layout>
+    </Layout>
+    </BrowserRouter>
+  );
+};
 export default App;

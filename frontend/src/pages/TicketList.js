@@ -1,90 +1,90 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Container, Row, Stack, Col, Card, Table } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import VNaviBar from '../components/VNaviBar';
-import Navigation from '../components/Navigation';
 import SearchBar from '../components/SearchBar';
+import { Table, Tag, Button } from 'antd';
 
-axios.defaults.withCredentials = true;
-
-function TicketList({user_id}) {
+const TicketList = () => {
     const [tickets, setTickets] = useState([]);
-    const access = localStorage.getItem('accessToken');
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/tickets/', {
-            headers: {
-                'Authorization': `Bearer ${access}`,
-            }
-        })
-
-            .then(response => setTickets(response.data))
-            .catch(error => {
-
-                if (error.response) {
-                    console.log(error.response.data); // ошибка от сервера
-                } else if (error.request) {
-                    console.log(error.request); // нет ответа от сервера
-                } else {
-                    console.log('Error', error.message); // общая ошибка
-                }
-                console.log(error.config); // конфигурация запроса
-            });
+        axios
+            .get('http://127.0.0.1:8000/api/tickets/')
+            .then((response) => {
+                const data = response.data;
+                setTickets(data);
+            })
+            .catch((error) => console.error('Невозможно показать тикеты:', error));
     }, []);
 
-    return (
-        <>
-            <Stack gap={0}>
-                <Container fluid>
-                    <Row>
-                        
-                        <Col sm={2}><VNaviBar /></Col>
-                        <Col>
-                        <Card>
-                        <Card.Header as="h6"><Row><Navigation user_id={user_id} /></Row> </Card.Header>
-                        <Card.Body><Row><SearchBar user_id={user_id} /></Row>
-                        </Card.Body>
-                            </Card>
-                            <Container fluid>
-                                <Table striped bordered hover className='tab'>
-                                    <thead>
-                                        <tr>
-                                            <th>№</th>
-                                            <th>Название</th>
-                                            {/* <th>Описание</th> */}
-                                            <th>Автор</th>
-                                            <th>Статус</th>
-                                            <th>Категория</th>
-                                            <th>Назначено</th>
-                                            <th>Дата создания</th>
-                                            <th>Обновлено</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {tickets.map(ticket => (
-                                            <tr key={ticket.id}>
-                                                <td className='ticket-link'><Link to={`/tickets/${ticket.id}`}>{ticket.id}</Link></td>
-                                                <td><Link to={`/tickets/${ticket.id}`}>{ticket.title}</Link></td>
-                                                {/* <td>{ticket.description}</td> */}
-                                                <td>{ticket.author.username}</td>
-                                                <td>{ticket.status.name}</td>
-                                                <td>{ticket.category.name}</td>
-                                                <td>{ticket.agent && ticket.agent.username}</td>
-                                                <td>{ticket.created_at}</td>
-                                                <td>{ticket.updated_at}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
-                            </Container>
-                        </Col>
-                    </Row>
-                </Container>
-            </Stack>
-        </>
+    const handleTitleClick = (event) => {
+        event.preventDefault();
+    }
+    const columns = [
+        {
+            title: 'ID',
+            dataIndex: 'id',
+            key: 'id',
+        },
+        {
+            title: 'Название',
+            dataIndex: 'title',
+            key: 'title',
+        },
+        {
+            title: 'Статус',
+            dataIndex: 'status',
+            key: 'status',
+            filters: [
+                { text: 'Новая', value: 'Новая' },
+                { text: 'В работе', value: 'В работе' },
+                { text: 'Решена', value: 'Решена' },
+                { text: 'Ожидающие', value: 'Ожидающие' },
+            ],
+            onFilter: (value, record) => record.status.name === value,
+            render: (status, text, record) => (
+                <>
+                <Tag
+                    color={
+                        status && status.name === 'Новая'
+                            ? 'green'
+                            : status && status.name === 'В работе'
+                                ? 'blue'
+                                : status && status.name === 'Решена'
+                                    ? 'black'
+                                    : 'red'
+                    }
+                >
+                    {status && status.name}
+                </Tag>
+                {/* <Button type="link" onClick={() => handleTitleClick(record)}>{text}</Button> */}
+                </>
+            ),
+        },
+        {
+            title: 'Категория',
+            dataIndex: 'category',
+            key: 'category',
+            render: (category) => category && category.name,
+        },
+        {
+            title: 'Автор',
+            dataIndex: 'author',
+            key: 'author',
+            render: (author) => author && author.username,
+        },
+        {
+            title: 'Назначено',
+            dataIndex: 'agent',
+            key: 'agent',
+            render: (agent) => agent && agent.username,
+        },
+    ];
 
-    );
-}
+    return (
+    <>
+    <SearchBar />
+    <Table columns={columns} dataSource={tickets} />
+    </>);
+};
 
 export default TicketList;

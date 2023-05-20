@@ -4,8 +4,9 @@ import { Form, Button, Alert, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 
-function Login({ setUserId }) {
+function Login() {
   const token = localStorage.getItem('accessToken');
+  const current_user = localStorage.getItem('current_user');
   const [username, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -14,20 +15,17 @@ function Login({ setUserId }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (token) {
-      const decodedToken = jwtDecode(token);
-      const userId = decodedToken.user_id;
-      setUserId(userId);
-      navigate('/tickets/', { replace: true });
+    if (!localStorage.getItem('current_user')) {
+      console.log(localStorage.getItem('current_user'));
+      navigate('/', { replace: true });
     } else {
       try {
         const response = await axios.post('http://localhost:8000/api/token/', { username, password });
         const { access } = response.data;
         localStorage.setItem('accessToken', access);
-        const decodedToken = jwtDecode(access);
-        const userId = decodedToken.user_id;
-        setUserId(userId);
-        navigate('/tickets/', { replace: true });
+        localStorage.setItem('current_user', username);
+        console.log(current_user);
+        navigate('/', { replace: true });
       } catch (error) {
         console.log(error);
         setError('Неправильный логин или пароль');

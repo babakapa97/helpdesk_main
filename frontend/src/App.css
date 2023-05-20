@@ -9,7 +9,7 @@
 
 .create_button {
   margin-right: 25px;
-  background-color:#1b838e;
+
 }
 
 .card-body {
@@ -32,39 +32,11 @@
 
  color: #1b838e;
  
-  
 }
-
-/* пункты меню VNaviBar */
-
-.l1 {
-  margin-top:50px;
-  color:#40acb8;
-}
-
-.l2 {
-  color:#40acb8;
-}
-
-.l3 {
-  color:#40acb8;
-}
-
-.br1 {
-  color:#40acb8;
-}
-
-.br2 {
-  color:#40acb8;
-}
-
 /* таблица с тикетами */
 .tab {
 
-  color:#40acb8;
-  border-color: #40acb8 ;
   border-radius: 5%;
-  text-decoration-color: #1b838e;
 
 }
 
@@ -77,4 +49,13 @@
 
   margin-left: 170px;
   margin-bottom: 5px;
+}
+
+.logo-collapsed {
+  display: none;
+}
+
+.demo-logo-vertical {
+  margin-top: 20px;
+  margin-bottom: 50px;
 }
