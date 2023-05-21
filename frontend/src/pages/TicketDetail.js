@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Descriptions } from 'antd';
+import { Descriptions, Select, Button } from 'antd';
 
-
+const { Option } = Select;
 
 function TicketDetail() {
   const [ticket, setTicket] = useState(null);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
-  const [status, setStatus] = useState([])
+  const [status, setStatus] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
@@ -19,9 +19,12 @@ function TicketDetail() {
     author: '1'
   });
 
+  const [selectedStatus, setSelectedStatus] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+
   let { id } = useParams();
 
-  //подгрузка категорий из БД
+  // Подгрузка категорий из БД
   useEffect(() => {
     axios.get('http://127.0.0.1:8000/api/categories/')
       .then(response => {
@@ -32,7 +35,7 @@ function TicketDetail() {
       });
   }, []);
 
-  // подгрузка статусов из БД
+  // Подгрузка статусов из БД
   useEffect(() => {
     axios.get('http://127.0.0.1:8000/api/status/')
       .then(response => {
@@ -43,33 +46,14 @@ function TicketDetail() {
       });
   }, []);
 
-  // const handleChange = (event) => {
-  //   const name = event.target.name;
-  //   let value = event.target.value;
-
-  //   if (name === 'category_id' || name === 'status_id') {
-  //     value = parseInt(value);
-  //   }
-
-  //   if (name === 'title' || name === 'description') {
-  //     setFormData((prevFormData) => ({
-  //       ...prevFormData,
-  //       [name]: value
-  //     }));
-  //   } else {
-  //     setFormData((prevFormData) => ({
-  //       ...prevFormData,
-  //       [name]: value
-  //     }));
-  //   }
-  // };
-
   useEffect(() => {
     const fetchTicket = async () => {
       try {
         const response = await axios.get(`http://127.0.0.1:8000/api/tickets/` + id + `/`);
         setTicket(response.data);
         setLoading(false);
+        setSelectedStatus(response.data.status.status_id);
+        setSelectedCategory(response.data.category.category_id);
       } catch (error) {
         console.log(error);
         setLoading(false);
@@ -78,24 +62,20 @@ function TicketDetail() {
     fetchTicket();
   }, [id]);
 
-  // if (loading) {
-  //   return <Spinner animation="border" />;
-  // }
+  const handleChangeStatus = (value) => {
+    setSelectedStatus(value);
+  };
 
-  if (!ticket) {
-    return <p>Заявка недоступна.</p>;
-  }
+  const handleChangeCategory = (value) => {
+    setSelectedCategory(value);
+  };
 
-  const updateData = {};
-  Object.entries(formData).forEach(([key, value]) => {
-    if (value) {
-      updateData[key] = value;
-    }
-  });
-
-  const updateTicket = async () => {
+  const handleSave = async () => {
     try {
-      const response = await axios.put(`http://127.0.0.1:8000/api/tickets/${id}/`, updateData);
+      const response = await axios.put(`http://127.0.0.1:8000/api/tickets/${id}/`, {
+        status_id: selectedStatus,
+        category_id: selectedCategory
+      });
       console.log(response.data);
       setShowAlert(true);
       window.location.reload();
@@ -104,41 +84,35 @@ function TicketDetail() {
     }
   };
 
-  const handleSave = (event) => {
-    event.preventDefault();
+  if (!ticket) {
+    return <p>Заявка недоступна.</p>;
+  }
 
-    updateTicket();
-  };
+  return (
+    <div>
+      <Descriptions title="Ticket Info" layout="vertical">
+        <Descriptions.Item label="ID">{ticket.id}</Descriptions.Item>
+        <Descriptions.Item label="Название">{ticket.title}</Descriptions.Item>
+        <Descriptions.Item label="Описание">{ticket.description}</Descriptions.Item>
+        <Descriptions.Item label="Статус">
+          <Select value={selectedStatus} onChange={handleChangeStatus}>
+            {status.map(s => (
+              <Option key={s.status_id} value={s.status_id}>{s.name}</Option>
+            ))}
+          </Select>
+        </Descriptions.Item>
+        <Descriptions.Item label="Категория">
+          <Select value={selectedCategory} onChange={handleChangeCategory}>
+            {categories.map(c => (
+              <Option key={c.category_id} value={c.category_id}>{c.name}</Option>
+            ))}
+          </Select>
+        </Descriptions.Item>
+      </Descriptions>
 
-  const handleAssign = async (event) => {
-    event.preventDefault();
-    try {
-        const response = await axios.put(`http://127.0.0.1:8000/api/tickets/${id}/`, {
-            agent_id: '1'
-        });
-        console.log(response.data);
-        setShowAlert(true);
-        window.location.reload();
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-
-return (
-  <div>
- <Descriptions title="Ticket Info" layout="vertical">
-    <Descriptions.Item label="UserName">Zhou Maomao</Descriptions.Item>
-    <Descriptions.Item label="Telephone">1810000000</Descriptions.Item>
-    <Descriptions.Item label="Live">Hangzhou, Zhejiang</Descriptions.Item>
-    <Descriptions.Item label="Address" span={2}>
-      No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China
-    </Descriptions.Item>
-    <Descriptions.Item label="Remark">empty</Descriptions.Item>
-  </Descriptions>
-           
-  </div>
-);
+      <Button type="primary" onClick={handleSave}>Сохранить</Button>
+    </div>
+  );
 }
 
 export default TicketDetail;
