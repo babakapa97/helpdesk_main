@@ -3,11 +3,15 @@ import SimpleBot from '../components/SimpleBot'
 import SimpleClock from '../components/SimpleClock';
 import { Col, Row } from 'antd';
 
+
+
 function Home() {
+    const username = localStorage.getItem('current_user');
+
     return (
         <div>
 
-            <h4>Здравствуйте, user! </h4>
+            <h4>Здравствуйте, {username}! </h4>
             <p>Вы находитесь на главной странице системы</p>
             <Row>
                 <Col span={12}><SimpleClock /></Col>

@@ -1,73 +1,79 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Dropdown, DropdownButton, ButtonGroup } from 'react-bootstrap';
-import { FiUser } from "react-icons/fi";
+import jwtDecode from 'jwt-decode';
+import { Dropdown, Space } from 'antd';
+import { DownOutlined, UserOutlined } from '@ant-design/icons';
 
+function WhoLoggedIn() {
+  const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+  const [last_name, setLastName] = useState('');
+  const [first_name, setFirstName] = useState('');
+  const token = localStorage.getItem('accessToken');
 
-function WhoLoggedIn({ children, user_id }) {
-    const navigate = useNavigate();
-    const [username, setUsername] = useState('');
-    const [last_name, setLastName] = useState('');
-    const [first_name, setFirstName] = useState('');
-
-        useEffect(() => {
-            fetch('http://localhost:8000/api/user/' + user_id + `/`)
-                .then(response => response.json())
-                .then(data => {
-                    setUsername(data.username);
-                    setFirstName(data.first_name);
-                    setLastName(data.last_name);
-                });
-        }, []);
-    
-
-    const UpdateUser = (e) => {
-        e.preventDefault();
-        fetch('http://localhost:8000/api/user/' + user_id + `/`)
-                .then(response => response.json())
-                .then(data => {
-                    setUsername(data.username);
-                    setFirstName(data.first_name);
-                    setLastName(data.last_name);
-                });
+  useEffect(() => {
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.user_id;
+      console.log('Token:', token);
+      console.log('User ID:', userId);
+  
+      fetch(`http://localhost:8000/api/user/${userId}/`)
+        .then(response => response.json())
+        .then(data => {
+          setUsername(data.username);
+          setFirstName(data.first_name);
+          setLastName(data.last_name);
+        })
+        .catch(error => {
+          console.log('API request failed:', error);
+        });
+    } else {
+      console.log('Token is not available');
+      navigate('/login');
     }
-    const logoutHandler = (e) => {
-        e.preventDefault();
-        localStorage.removeItem('accessToken');
-        navigate('/', { replace: true });
-    }
+  }, [token, navigate]);
+  
+  const logoutHandler = (e) => {
+    e.preventDefault();
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('current_user');
+    navigate('/login', { replace: true });
+    window.location.reload();
+  };
 
-    return (
+  const items = [
+    {
+      key: '1',
+      label: (
+        <a target="_blank" rel="noopener noreferrer" href="">
+         Профиль
+        </a>
+      ),
+    },
 
-        <div className="Profile">
-            {/* <Dropdown>
-                <Dropdown.Toggle variant="secondary" id="dropdown-basic" size="sm">
-                <BsYinYang/>
-                </Dropdown.Toggle>
+    {
+      key: '2',
+      label: (
+        <a target="_blank" rel="noopener noreferrer" onClick={logoutHandler}>
+          Выход
+        </a>
+      ),
+    },
+  ];
 
-                <Dropdown.Menu drop={'start'}>
-                    <Dropdown.Item href="#/action-1">Профиль</Dropdown.Item>
-                    <Dropdown.Item onClick={logoutHandler}>Выйти</Dropdown.Item>
-                </Dropdown.Menu>
-            </Dropdown> */}
-            <DropdownButton onClick={UpdateUser}
-                key="start"
-                id={`dropdown-button-drop-start`}
-                drop="start"
-                variant="secondary"
-                title=<FiUser />>
-
-                <Dropdown.Item disabled>{first_name} {last_name}</Dropdown.Item>
-                <Dropdown.Divider />
-                <Dropdown.Item>Профиль</Dropdown.Item>
-                <Dropdown.Item onClick={logoutHandler}>Выйти</Dropdown.Item>
-            </DropdownButton>
-        </div>
-
-    )
-
-
-    // return children;
+  return (
+    <div className="Profile">
+      <Dropdown menu={{ items }} >
+        <a onClick={(e) => e.preventDefault()}>
+          <Space>
+            {first_name} {last_name} <UserOutlined  /> {/* Display the username */}
+            <DownOutlined />
+          </Space>
+        </a>
+      </Dropdown>
+    </div>
+  );
 }
 
 export default WhoLoggedIn;

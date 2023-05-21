@@ -22,7 +22,7 @@ function SearchBar() {
       <Space wrap>
         <Button type="primary" onClick={showModal}>Создать заявку</Button>
       </Space>
-      <Modal title="Basic Modal" okButtonProps={{ style: { display: 'none' } }} cancelButtonProps={{ style: { display: 'none' } }} 
+      <Modal title="Новая заявка" okButtonProps={{ style: { display: 'none' } }} cancelButtonProps={{ style: { display: 'none' } }} 
       open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         <CreateTicket />
       </Modal>

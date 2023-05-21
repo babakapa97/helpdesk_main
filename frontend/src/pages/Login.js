@@ -1,64 +1,82 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useNavigate, Outlet } from 'react-router-dom';
 import axios from 'axios';
-import { Form, Button, Alert, Card } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import jwtDecode from 'jwt-decode';
+import { Form, Input, Button, message } from 'antd';
 
 function Login() {
-  const token = localStorage.getItem('accessToken');
-  const current_user = localStorage.getItem('current_user');
-  const [username, setLogin] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [username, setUsername] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    if (!localStorage.getItem('current_user')) {
-      console.log(localStorage.getItem('current_user'));
-      navigate('/', { replace: true });
-    } else {
-      try {
-        const response = await axios.post('http://localhost:8000/api/token/', { username, password });
-        const { access } = response.data;
+  const handleLogin = (values) => {
+    setLoading(true);
+    console.log(values);
+    axios
+      .post('http://localhost:8000/api/token/', JSON.stringify(values), {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }) 
+      .then((response) => {
+        const { access, refresh } = response.data;
         localStorage.setItem('accessToken', access);
-        localStorage.setItem('current_user', username);
-        console.log(current_user);
+        localStorage.setItem('current_user', username)
+        message.success('Вход выполнен успешно');
+        console.log(localStorage.getItem('accessToken'));
         navigate('/', { replace: true });
-      } catch (error) {
-        console.log(error);
-        setError('Неправильный логин или пароль');
-      }
-    }
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error(error);
+        message.error('Ошибка при входе');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const handleUsernameChange = (event) => {
+    setUsername(event.target.value);
   };
 
   return (
-    <div className="container">
-      <Card className="text-center">
-      <Card.Header><h2>Вход</h2>
-      <p>В систему технической поддержки ГБУЗ «Республиканский медицинский информационно-аналитический центр»</p>
-      </Card.Header>
-      <Card.Body><Form onSubmit={handleSubmit}>
-        {error && <Alert variant="danger">{error}</Alert>}
-        <Form.Group controlId="formBasicEmail">
-          <Form.Label>Логин</Form.Label>
-          <Form.Control type="text" placeholder="Введите логин" value={username} onChange={(event) => setLogin(event.target.value)} required />
-        </Form.Group>
+    <> <Form onFinish={handleLogin}>
+      <Form.Item
+        label="Имя пользователя"
+        name="username"
+        rules={[
+          {
+            required: true,
+            message: 'Пожалуйста, введите имя пользователя',
+          },
+        ]}
+      >
+        <Input type="text" value={username} onChange={handleUsernameChange} />
+      </Form.Item>
 
-        <Form.Group controlId="formBasicPassword">
-          <Form.Label>Пароль</Form.Label>
-          <Form.Control type="password" placeholder="Введите пароль" value={password} onChange={(event) => setPassword(event.target.value)} required />
-        </Form.Group>
+      <Form.Item
+        label="Пароль"
+        name="password"
+        rules={[
+          {
+            required: true,
+            message: 'Пожалуйста, введите свой пароль',
+          },
+        ]}
+      >
+        <Input.Password />
+      </Form.Item>
 
-        <Button variant="primary" type="submit">
+      <Form.Item>
+        <Button type="primary" htmlType="submit" loading={loading}>
           Войти
         </Button>
-      </Form>
-      </Card.Body>
-      </Card>
-    </div>
+      </Form.Item>
+    </Form></>
   );
 }
 
 export default Login;
+
+
+
