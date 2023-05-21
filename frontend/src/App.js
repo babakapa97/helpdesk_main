@@ -60,6 +60,7 @@ const App = () => {
   if (!isAuthenticated) {
     return (
         <Routes>
+          <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/login" element={<Login />} />
         </Routes>
     )
@@ -140,6 +141,7 @@ const App = () => {
                     <Route path="/" element={<Home />} />
                   </>
                 ) : (
+                  // <Route path="/login" element={<Login />} />
                   <Route path="/" element={<Navigate to="/login" />} />
                 )}
               </Routes>
