@@ -6,9 +6,23 @@ import { useNavigate } from 'react-router-dom';
 
 const TicketList = () => {
   const token = localStorage.getItem('accessToken');
+  const user_id = localStorage.getItem('user_id');
   const [tickets, setTickets] = useState([]);
+  const [userGroup, setUserGroup] = useState([]);
   const navigate = useNavigate();
-
+  
+  // Запрос к API для получения информации о пользователе
+  useEffect(() => {
+    axios.get(`http://127.0.0.1:8000/api/user/${user_id}/`)
+      .then(response => {
+        const groups = response.data.groups;
+        setUserGroup(groups);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }, [user_id]);
+  
   useEffect(() => {
     axios
       .get('http://127.0.0.1:8000/api/tickets/', {
@@ -16,12 +30,35 @@ const TicketList = () => {
           Authorization: `Bearer ${token}`,
         },
       })
-      .then((response) => {
-        const data = response.data;
-        setTickets(data);
+      .then(response => {
+        console.log(response.data);
+        // Фильтрация заявок в зависимости от группы пользователя
+        const filteredTickets = response.data.filter(ticket => {
+          console.log(ticket.category.category_id); 
+          // console.log(userGroup);
+          // Здесь нужно определить условие фильтрации на основе значения userGroup
+          // Здесь нужно определить условие фильтрации на основе значения userGroup
+        if (userGroup.includes('СOD')) {
+          return ticket.category.category_id === 2;
+        } else if (userGroup.includes('OIB')) {
+          return ticket.category.category_id === 3;
+        } else if (userGroup.includes('INFO')) {
+          return ticket.category.category_id === 1;
+        } else if (userGroup.includes('Группа 4')) {
+          return ticket.category.category_id === 2;
+        } else {
+          // Если не выполняется ни одно из условий фильтрации, возвращаем false
+          return false;
+        }
+        });
+        setTickets(filteredTickets);
+        console.log(filteredTickets);
       })
-      .catch((error) => console.error('Невозможно показать тикеты:', error));
-  }, []);
+      .catch(error => {
+        console.error('Невозможно показать тикеты:', error);
+      });
+  }, [userGroup]);
+  
 
   const handleRowClick = (record) => {
     navigate(`/tickets/${record.id}`);
@@ -65,7 +102,7 @@ const TicketList = () => {
                 ? 'blue'
                 : status && status.name === 'Решена'
                   ? 'black'
-                  : 'red'
+                  : 'orange'
           }
         >
           {status && status.name}
@@ -128,5 +165,6 @@ const TicketList = () => {
     </>
   );
 };
+
 
 export default TicketList;

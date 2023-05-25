@@ -45,8 +45,20 @@ class TicketViewSet(viewsets.ViewSet):
 
 # GET метод для просмотра деталей юзера
 class UserDetailView(RetrieveAPIView):
-        queryset = User.objects.all()
-        serializer_class = UserSerializer
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        data = serializer.data
+
+        # Добавляем информацию о группе в возвращаемые данные
+        groups = instance.groups.all()
+        group_names = [group.name for group in groups]
+        data['groups'] = group_names
+
+        return Response(data)
 
 
 # GET метод для просмотра деталей тикета

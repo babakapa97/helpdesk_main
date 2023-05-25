@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Ticket, Status, Category, Comment
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from rest_framework.serializers import Serializer, ModelSerializer, CharField
 from drf_writable_nested import WritableNestedModelSerializer
 
@@ -29,7 +29,15 @@ class CategorySerializer(serializers.ModelSerializer):
     name = serializers.CharField(required=False)
 
 
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = ('name',)
+
+
 class UserSerializer(serializers.ModelSerializer):
+    group = GroupSerializer(many=True)
+
     class Meta:
         model = User
         fields = ['id', 'username', 'first_name', 'last_name']

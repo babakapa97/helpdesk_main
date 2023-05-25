@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Descriptions, Select, Button, Modal, Space, Avatar, Tooltip, List, Form, Input } from 'antd';
+import { Descriptions, Select, Button, Modal, Space, Avatar, Tooltip, List, Form, Input, Divider } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { DeleteTwoTone, setTwoToneColor } from '@ant-design/icons'
 import { Comment } from '@ant-design/compatible';
@@ -228,6 +228,7 @@ function TicketDetail() {
         <Descriptions.Item label="Назначено">{ticket.agent?.username || 'Нет данных'}</Descriptions.Item>
         <Descriptions.Item>Создано: {ticket.created_at}, обновлено {ticket.updated_at} </Descriptions.Item>
       </Descriptions>
+      <Divider>Комментарии</Divider >
       <CommentList comments={comments} />
       <Form form={form} onFinish={handleCommentSubmit}>
         <Form.Item
