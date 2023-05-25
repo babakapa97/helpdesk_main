@@ -1,5 +1,6 @@
+import json
 from rest_framework import generics
-from rest_framework.generics import RetrieveAPIView
+from rest_framework.generics import RetrieveAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -8,9 +9,11 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from .serializers import UserSerializer, TicketCreateSerializer, TicketViewSerializer
 from rest_framework import viewsets, status
 from django.shortcuts import get_object_or_404
-from .models import Ticket, Category, Status
+from .models import Ticket, Category, Status, Comment
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
 
 #для просмотра user
 @api_view()
@@ -23,7 +26,7 @@ def user(request: Request):
 
 # GET метод для просмотра тикетов
 class TicketViewSet(viewsets.ViewSet):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def list(self, request):
         queryset = Ticket.objects.all()
@@ -47,9 +50,10 @@ class UserDetailView(RetrieveAPIView):
 
 
 # GET метод для просмотра деталей тикета
-class TicketDetailView(RetrieveAPIView):
+class TicketDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Ticket.objects.all()
     serializer_class = TicketViewSerializer
+    
 
 
 #обновление данных тикета
@@ -119,5 +123,34 @@ def create_ticket(request):
     else:
         print(serializer.errors)
         return JsonResponse({'status': 'error', 'message': 'Invalid data'}, status=400)
+
+
+@csrf_exempt
+def get_ticket_comments(request, ticket_id):
+    if request.method == 'GET':
+        # Здесь выполняйте логику для получения комментариев, относящихся к тикету с указанным ticket_id
+        comments = Comment.objects.filter(ticket_id=ticket_id).values()
+
+        # Возвращайте список комментариев в формате JSON
+        return JsonResponse(list(comments), safe=False)
+    elif request.method == 'POST':
+        # Создайте новый комментарий
+        data = json.loads(request.body)
+        content = data.get('content')
+        author = data.get('author')
+        print(content)
+        if content is not None:
+            ticket = Ticket.objects.get(id=ticket_id)
+            new_comment = Comment(
+                ticket_id=ticket,
+                content=content,
+                author_id=author,
+            )
+            new_comment.save()
+            return JsonResponse({'message': 'Comment created successfully'})
+        else:
+            return JsonResponse({'error': 'Content cannot be empty'}, status=400)
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 

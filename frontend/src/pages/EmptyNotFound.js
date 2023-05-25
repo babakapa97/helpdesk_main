@@ -2,7 +2,7 @@
 function EmptyPageNotFound () {
  return(
 
-    <p>page not ready yet</p>
+    <p>Раздел в разработке.</p>
  )
 
 }

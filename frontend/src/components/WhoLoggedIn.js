@@ -15,8 +15,7 @@ function WhoLoggedIn() {
     if (token) {
       const decodedToken = jwtDecode(token);
       const userId = decodedToken.user_id;
-      console.log('Token:', token);
-      console.log('User ID:', userId);
+      localStorage.setItem('user_id', userId);
   
       fetch(`http://localhost:8000/api/user/${userId}/`)
         .then(response => response.json())
@@ -38,6 +37,7 @@ function WhoLoggedIn() {
     e.preventDefault();
     localStorage.removeItem('accessToken');
     localStorage.removeItem('current_user');
+    localStorage.removeItem('user_id');
     navigate('/login', { replace: true });
     window.location.reload();
   };

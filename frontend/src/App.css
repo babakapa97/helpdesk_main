@@ -6,28 +6,6 @@
   color:#40acb8;
 }
 
-
-.create_button {
-  margin-right: 25px;
-
-}
-
-.card-body {
-
-  font-size:18px;
-}
-
-.card-footer {
-  
-  font-size: smaller;
-  font-weight: 100;
-}
-
-.brandlogo {
-
-  margin-top:20px;
-}
-
 .flex-column {
 
  color: #1b838e;
@@ -63,4 +41,9 @@
 .Profile {
 
   margin-left: 1050px;
+}
+
+.bot-btn {
+
+ 
 }

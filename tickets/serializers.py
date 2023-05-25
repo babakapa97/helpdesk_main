@@ -1,8 +1,14 @@
 from rest_framework import serializers
-from .models import Ticket, Status, Category
+from .models import Ticket, Status, Category, Comment
 from django.contrib.auth.models import User
 from rest_framework.serializers import Serializer, ModelSerializer, CharField
 from drf_writable_nested import WritableNestedModelSerializer
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['id', 'content', 'author', 'ticket_id']
 
 
 class StatusSerializer(serializers.ModelSerializer):
@@ -103,7 +109,8 @@ class TicketViewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ticket
-        fields = ('id', 'title', 'description', 'status', 'category', 'author', 'created_at', 'updated_at', 'agent', 'attach')
+        fields = ('id', 'title', 'description', 'status', 'category',
+                  'author', 'created_at', 'updated_at', 'agent', 'attach')
 
 
 

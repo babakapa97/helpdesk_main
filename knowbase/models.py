@@ -15,7 +15,8 @@ class Knowledge(models.Model):
     content = models.TextField()
     section = models.ForeignKey(Section, on_delete=models.CASCADE)
     attach = attach = models.FileField(upload_to='files/attach_faq/%Y-%m-%d/', null=True, blank=True)
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, verbose_name='Автор', related_name='knowledge_authors', blank=True, null=True)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
+                               verbose_name='Автор', related_name='knowledge_authors', blank=True, null=True)
 
     def __str__(self):
         return self.title

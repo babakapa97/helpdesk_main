@@ -13,10 +13,15 @@ class KnowledgeDetail(RetrieveAPIView):
 
 
 class KnowledgeViewSet(viewsets.ViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def list(self, request):
+        section = request.query_params.get('section')  # Получаем значение параметра "section" из запроса
         queryset = Knowledge.objects.all()
+        
+        if section:
+            queryset = queryset.filter(section=section)  # Фильтрация по разделу, если передан параметр "section"
+        
         serializer = KnowledgeSerializer(queryset, many=True, context={'request': request})
         data = serializer.data
         for idx, knowledge_data in enumerate(data):

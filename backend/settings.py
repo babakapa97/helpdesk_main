@@ -39,8 +39,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'rest_framework_simplejwt',
-    'create_ticket',
-    'knowbase'
+    'tickets',
+    'knowbase',
+    'audit',
+    'bots'
 ]
 
 MIDDLEWARE = [
@@ -72,7 +74,7 @@ TEMPLATES = [
     },
 ]
 
-# WSGI_APPLICATION = 'create_ticket.wsgi.application'
+# WSGI_APPLICATION = 'tickets.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
@@ -154,7 +156,7 @@ BLACKLIST_AFTER_ROTATION = True
 #             "class": "logging.StreamHandler",
 #         },
 #     },
-#
+
 #     "loggers": {
 #         "django": {
 #             "handlers": ["console"],

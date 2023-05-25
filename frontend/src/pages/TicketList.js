@@ -5,12 +5,17 @@ import { Table, Tag } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 const TicketList = () => {
+  const token = localStorage.getItem('accessToken');
   const [tickets, setTickets] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     axios
-      .get('http://127.0.0.1:8000/api/tickets/')
+      .get('http://127.0.0.1:8000/api/tickets/', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         const data = response.data;
         setTickets(data);
@@ -27,6 +32,8 @@ const TicketList = () => {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
+      sorter: (a, b) => a.id - b.id,
+      defaultSortOrder: 'descend',
     },
     {
       title: 'Название',
@@ -55,10 +62,10 @@ const TicketList = () => {
             status && status.name === 'Новая'
               ? 'green'
               : status && status.name === 'В работе'
-              ? 'blue'
-              : status && status.name === 'Решена'
-              ? 'black'
-              : 'red'
+                ? 'blue'
+                : status && status.name === 'Решена'
+                  ? 'black'
+                  : 'red'
           }
         >
           {status && status.name}
@@ -83,7 +90,14 @@ const TicketList = () => {
       key: 'agent',
       render: (agent) => agent && agent.username,
     },
+
+    {
+      title: 'Дата создания',
+      dataIndex: 'created_at',
+      key: 'created_at',
+    },
   ];
+
 
   // Компонент-обертка для ячейки таблицы с возможностью клика
   const ClickableTableCell = ({ onClick, children }) => (
@@ -92,10 +106,25 @@ const TicketList = () => {
     </div>
   );
 
+  const handleTableChange = (pagination, filters, sorter) => {
+    if (sorter && sorter.columnKey === 'id') {
+      setTickets((prevTickets) => {
+        const sortedTickets = [...prevTickets].sort((a, b) => (sorter.order === 'descend' ? b.id - a.id : a.id - b.id));
+        return sortedTickets;
+      });
+    }
+  };
+
   return (
     <>
       <SearchBar />
-      <Table columns={columns} dataSource={tickets} rowKey="id" onRowClick={handleRowClick} />
+      <Table
+        columns={columns}
+        dataSource={tickets}
+        rowKey="id"
+        onRowClick={handleRowClick}
+        onChange={handleTableChange}
+      />
     </>
   );
 };

@@ -1,7 +1,7 @@
 import { DesktopOutlined, BarsOutlined, HomeOutlined, BookOutlined } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
 import { useState } from 'react';
-import { Routes, Route, BrowserRouter, Link, Navigate } from 'react-router-dom';
+import { Routes, Route, Link, Navigate } from 'react-router-dom';
 import logo from './components/img/logo_rmiac.png'
 import TicketList from './pages/TicketList';
 import KnowBase from './pages/KnowBase'
@@ -10,6 +10,7 @@ import Home from './pages/Home';
 import EmptyNotFound from './pages/EmptyNotFound'
 import Login from './pages/Login'
 import WhoLoggedIn from './components/WhoLoggedIn';
+import Audit from './pages/Audit'
 
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -45,7 +46,7 @@ const items = [
   //   getItem('Team 2', '8', null, null, '/team2')
   // ]),
   getItem('База знаний', '3', <BookOutlined />, null, '/knowbase'),
-  getItem('Активы', '4', <DesktopOutlined />, null, '/'),
+  getItem('Активы', '4', <DesktopOutlined />, null, '/audit'),
 ];
 
 
@@ -137,11 +138,11 @@ const App = () => {
                     <Route path="/tickets" element={<TicketList />} />
                     <Route path="/tickets/:id" element={<TicketDetail />} />
                     <Route path="/knowbase" element={<KnowBase />} />
+                    <Route path="/audit" element={<EmptyNotFound />} />
                     <Route path="*" element={<EmptyNotFound />} />
                     <Route path="/" element={<Home />} />
                   </>
                 ) : (
-                  // <Route path="/login" element={<Login />} />
                   <Route path="/" element={<Navigate to="/login" />} />
                 )}
               </Routes>
@@ -152,7 +153,7 @@ const App = () => {
               textAlign: 'center',
             }}
           >
-            Ant Design ©2023 Created by Ant UED
+            ГБУЗ "РМИАЦ" ©2023 Created by A.Kaporskaya
           </Footer>
         </Layout>
       </Layout>

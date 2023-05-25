@@ -7,6 +7,7 @@ function CreateTicket() {
   const [form] = Form.useForm();
   const [categories, setCategories] = useState([]);
   const access = localStorage.getItem('accessToken');
+  const user_id = localStorage.getItem('user_id');
 
   useEffect(() => {
     axios.get('http://127.0.0.1:8000/api/categories/')
@@ -39,7 +40,7 @@ function CreateTicket() {
         status: {
           status_id: '1'
         },
-        author: '1'
+        author: parseInt(user_id)
       })
         .then((response) => {
           console.log(response);
