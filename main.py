@@ -3,7 +3,7 @@ import requests
 from telebot import types
 
 # Установите токен API вашего бота
-bot_token = '6006609016:AAFVt3SAOPvVpElrwqK3UJu_Mm7V6PzrG0I'
+bot_token = ''
 
 
 # Создайте экземпляр бота
