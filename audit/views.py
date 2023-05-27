@@ -4,21 +4,19 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from .models import Hardware
 from .serializers import HardwareSerializer
-from django.shortcuts import render
+from rest_framework.views import APIView
+from rest_framework import status
 
 
-class HardwareDetail(RetrieveAPIView):
-    queryset = Hardware.objects.all()
-    serializer_class = HardwareSerializer
+class HardwareCreateView(APIView):
+    def get(self, request):
+        hardware = Hardware.objects.all()
+        serializer = HardwareSerializer(hardware, many=True)
+        return Response(serializer.data)
 
-
-class HardwareViewSet(viewsets.ViewSet):
-    permission_classes = [IsAuthenticated]
-
-    def list(self, request):
-        queryset = Hardware.objects.all()
-        serializer = HardwareSerializer(queryset, many=True, context={'request': request})
-        data = serializer.data
-        for idx, hardware_data in enumerate(data):
-            hardware_data['id'] = queryset[idx].id
-        return Response(data)
+    def post(self, request):
+        serializer = HardwareSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

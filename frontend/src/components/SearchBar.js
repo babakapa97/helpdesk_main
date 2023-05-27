@@ -33,6 +33,7 @@ function SearchBar({setTicketAdded}) {
 
   return (
     <>
+    <h2>Список заявок</h2>
       <Space wrap>
         <Button type="primary" onClick={showModal}>Создать заявку</Button>
       </Space>

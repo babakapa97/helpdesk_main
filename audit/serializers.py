@@ -1,14 +1,10 @@
 from rest_framework import serializers
-from .models import Hardware, HardwareType
+from .models import Hardware
 
 
 class HardwareSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hardware
-        fields = ['id', 'type', 'owner']
+        fields = ['id', 'computer_name', 'processor_info', 'memory_info', 'monitor_info', 'owner']
 
 
-class HardwareTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = HardwareType
-        fields = ['type_id', 'name']
