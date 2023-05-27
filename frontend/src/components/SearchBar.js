@@ -1,10 +1,24 @@
 import CreateTicket from '../pages/CreateTicket';
 import { useState } from 'react';
 import { Button, Input, Space, Modal } from 'antd';
+import { CSVLink } from 'react-csv';
+import { ExportOutlined } from '@ant-design/icons';
+
 
 const { Search } = Input;
 
-function SearchBar() {
+const ExportButton = ({ exportData }) => {
+  return (
+    <>
+      <CSVLink data={exportData} filename="tickets.csv">
+        <Button icon={<ExportOutlined />}>Экспорт в CSV</Button>
+      </CSVLink>
+    </>
+  );
+};
+
+
+function SearchBar({setTicketAdded}) {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
@@ -24,8 +38,9 @@ function SearchBar() {
       </Space>
       <Modal title="Новая заявка" okButtonProps={{ style: { display: 'none' } }} cancelButtonProps={{ style: { display: 'none' } }} 
       open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-        <CreateTicket />
+        <CreateTicket setTicketAdded={setTicketAdded}/>
       </Modal>
+      {/* <ExportButton /> */}
     </>
   );
 }

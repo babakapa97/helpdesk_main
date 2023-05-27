@@ -10,7 +10,10 @@ const TicketList = () => {
   const [tickets, setTickets] = useState([]);
   const [userGroup, setUserGroup] = useState([]);
   const navigate = useNavigate();
+  const [exportData, setExportData] = useState([]);
+  const [ticketAdded, setTicketAdded] = useState(false);
   
+
   // Запрос к API для получения информации о пользователе
   useEffect(() => {
     axios.get(`http://127.0.0.1:8000/api/user/${user_id}/`)
@@ -22,7 +25,7 @@ const TicketList = () => {
         console.log(error);
       });
   }, [user_id]);
-  
+
   useEffect(() => {
     axios
       .get('http://127.0.0.1:8000/api/tickets/', {
@@ -31,34 +34,39 @@ const TicketList = () => {
         },
       })
       .then(response => {
-        console.log(response.data);
         // Фильтрация заявок в зависимости от группы пользователя
         const filteredTickets = response.data.filter(ticket => {
-          console.log(ticket.category.category_id); 
-          // console.log(userGroup);
-          // Здесь нужно определить условие фильтрации на основе значения userGroup
-          // Здесь нужно определить условие фильтрации на основе значения userGroup
-        if (userGroup.includes('СOD')) {
-          return ticket.category.category_id === 2;
-        } else if (userGroup.includes('OIB')) {
-          return ticket.category.category_id === 3;
-        } else if (userGroup.includes('INFO')) {
-          return ticket.category.category_id === 1;
-        } else if (userGroup.includes('Группа 4')) {
-          return ticket.category.category_id === 2;
-        } else {
-          // Если не выполняется ни одно из условий фильтрации, возвращаем false
-          return false;
-        }
+          // Здесь нужно определить условие фильтрации 
+          if (userGroup.includes('СOD') || user_id === ticket.author.id.toString()) {
+            return ticket.category.category_id === 2 || ticket.category.category_id === 4 || ticket.category.category_id === 5 || ticket.author.id.toString() === user_id;          
+          } else if (userGroup.includes('OIB') || user_id === ticket.author.id.toString()) {
+            return ticket.category.category_id === 3 || ticket.author.id.toString() === user_id;
+          } else if (userGroup.includes('INFO') || userGroup.includes('PROG') || user_id === ticket.author.id.toString()) {
+            return ticket.category.category_id === 1 || ticket.author.id.toString() === user_id;
+          } else if (userGroup.includes('simple_user')) {
+            return ticket.author.id === user_id;
+          } else {
+            // Если не выполняется ни одно из условий фильтрации, возвращаем false
+            return false;
+          }
         });
         setTickets(filteredTickets);
-        console.log(filteredTickets);
+        setExportData(filteredTickets.map(ticket => ({
+          ID: ticket.id,
+          Название: ticket.title,
+          Статус: ticket.status.name,
+          Категория: ticket.category.name,
+          Автор: ticket.author.username,
+          Дата_создания: ticket.created_at,
+        })));
+        
       })
       .catch(error => {
         console.error('Невозможно показать тикеты:', error);
       });
-  }, [userGroup]);
-  
+  }, [userGroup, user_id, ticketAdded]);
+
+  console.log(exportData);
 
   const handleRowClick = (record) => {
     navigate(`/tickets/${record.id}`);
@@ -154,7 +162,8 @@ const TicketList = () => {
 
   return (
     <>
-      <SearchBar />
+      <SearchBar setTicketAdded={setTicketAdded} exportData={exportData} />
+
       <Table
         columns={columns}
         dataSource={tickets}

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, Form, Input, Space, Select, message } from 'antd';
 
-function CreateTicket() {
+function CreateTicket({ setTicketAdded }) {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [form] = Form.useForm();
   const [categories, setCategories] = useState([]);
@@ -43,9 +43,9 @@ function CreateTicket() {
         author: parseInt(user_id)
       })
         .then((response) => {
-          console.log(response);
           form.resetFields();
           setSelectedCategory('');
+          setTicketAdded(true);
           message.success('Тикет успешно добавлен');
         })
         .catch((error) => {
