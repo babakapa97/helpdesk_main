@@ -156,7 +156,7 @@ BLACKLIST_AFTER_ROTATION = True
 #             "class": "logging.StreamHandler",
 #         },
 #     },
-
+#
 #     "loggers": {
 #         "django": {
 #             "handlers": ["console"],

@@ -11,6 +11,7 @@ import EmptyNotFound from './pages/EmptyNotFound'
 import Login from './pages/Login'
 import WhoLoggedIn from './components/WhoLoggedIn';
 import Audit from './pages/Audit'
+import UserDetail from './pages/UserDetail';
 
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -139,6 +140,7 @@ const App = () => {
                     <Route path="/tickets/:id" element={<TicketDetail />} />
                     <Route path="/knowbase" element={<KnowBase />} />
                     <Route path="/audit" element={<Audit />} />
+                    <Route path="/user/:id" element={<UserDetail />} />
                     <Route path="*" element={<EmptyNotFound />} />
                     <Route path="/" element={<Home />} />
                   </>

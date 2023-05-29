@@ -40,7 +40,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'first_name', 'last_name']
+        fields = ['id', 'username', 'first_name', 'last_name', 'email']
 
     id = serializers.IntegerField(required=False)
     username = serializers.CharField(required=False)
@@ -51,6 +51,7 @@ class UserSerializer(serializers.ModelSerializer):
             'username': instance.username,
             'first_name': instance.first_name,
             'last_name': instance.last_name,
+            'email': instance.email,
         }
 
 # сериалайзер для создания тикетов
@@ -63,6 +64,8 @@ class TicketCreateSerializer(WritableNestedModelSerializer, serializers.ModelSer
     description = serializers.CharField()
     category = CategorySerializer()
     status = StatusSerializer()
+    attach = serializers.FileField(required=False)
+    # attach = serializers.URLField(required=False)
 
     class Meta:
         model = Ticket

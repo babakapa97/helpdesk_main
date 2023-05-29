@@ -10,7 +10,11 @@ from rest_framework import status
 
 class HardwareCreateView(APIView):
     def get(self, request):
-        hardware = Hardware.objects.all()
+        owner = request.query_params.get('owner')
+        if owner:
+            hardware = Hardware.objects.filter(owner=owner)
+        else:
+            hardware = Hardware.objects.all()
         serializer = HardwareSerializer(hardware, many=True)
         return Response(serializer.data)
 
@@ -20,3 +24,4 @@ class HardwareCreateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

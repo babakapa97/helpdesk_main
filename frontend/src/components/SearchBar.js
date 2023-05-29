@@ -1,6 +1,6 @@
 import CreateTicket from '../pages/CreateTicket';
 import { useState } from 'react';
-import { Button, Input, Space, Modal } from 'antd';
+import { Button, Input, Space, Modal, Row, Col } from 'antd';
 import { CSVLink } from 'react-csv';
 import { ExportOutlined } from '@ant-design/icons';
 
@@ -18,7 +18,7 @@ const ExportButton = ({ exportData }) => {
 };
 
 
-function SearchBar({setTicketAdded}) {
+function SearchBar({ setTicketAdded }) {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
@@ -33,13 +33,13 @@ function SearchBar({setTicketAdded}) {
 
   return (
     <>
-    <h2>Список заявок</h2>
+      <h2>Список заявок</h2>
       <Space wrap>
-        <Button type="primary" onClick={showModal}>Создать заявку</Button>
+            <Button type="primary" onClick={showModal}>Создать заявку</Button>
       </Space>
-      <Modal title="Новая заявка" okButtonProps={{ style: { display: 'none' } }} cancelButtonProps={{ style: { display: 'none' } }} 
-      open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-        <CreateTicket setTicketAdded={setTicketAdded}/>
+      <Modal title="Новая заявка" okButtonProps={{ style: { display: 'none' } }} cancelButtonProps={{ style: { display: 'none' } }}
+        open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+        <CreateTicket setTicketAdded={setTicketAdded} />
       </Modal>
       {/* <ExportButton /> */}
     </>

@@ -1,6 +1,6 @@
 import json
 from rest_framework import generics
-from rest_framework.generics import RetrieveAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import RetrieveAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -124,18 +124,33 @@ def status_list(request):
     return JsonResponse(data, safe=False)
 
 
-# POST метод для добавления тикета
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def create_ticket(request):
-    serializer = TicketCreateSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return JsonResponse({'status': 'success', 'ticket_id': serializer.instance.id})
-    else:
-        print(serializer.errors)
-        return JsonResponse({'status': 'error', 'message': 'Invalid data'}, status=400)
+# # POST метод для добавления тикета
+# @api_view(['POST'])
+# @permission_classes([AllowAny])
+# def create_ticket(request):
+#     serializer = TicketCreateSerializer(data=request.data)
+#     if serializer.is_valid():
+#         serializer.save()
+#         return JsonResponse({'status': 'success', 'ticket_id': serializer.instance.id})
+#     else:
+#         print(serializer.errors)
+#         return JsonResponse({'status': 'error', 'message': 'Invalid data'}, status=400)
 
+class TicketCreateView(CreateAPIView):
+    serializer_class = TicketCreateSerializer
+
+    def create(self, request, *args, **kwargs):
+        attach = request.FILES.get('attach')  # Получаем файл из поля attach
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        ticket = serializer.save()
+
+        if attach:
+            ticket.attach = attach  # Привязываем файл к созданному тикету
+            ticket.save()
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 @csrf_exempt
 def get_ticket_comments(request, ticket_id):

@@ -30,6 +30,7 @@ class Ticket(models.Model):
     agent = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
                               verbose_name='Назначен', related_name='agents', blank=True)
     attach = models.FileField(upload_to='files/attach_tickets/%Y-%m-%d/', null=True, blank=True)
+    # attach = models.URLField(null=True, blank=True)
 
     def __str__(self):
         return self.title

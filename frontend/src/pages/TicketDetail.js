@@ -34,6 +34,8 @@ function TicketDetail() {
   const [commentText, setCommentText] = useState('');
   const [authorNames, setAuthorNames] = useState({});
   const [form] = Form.useForm();
+  const [attachment, setAttachment] = useState(null);
+
 
 
   let { id } = useParams();
@@ -112,7 +114,7 @@ function TicketDetail() {
       console.log(error);
     }
   };
-  
+
 
   useEffect(() => {
     const fetchTicket = async () => {
@@ -123,6 +125,7 @@ function TicketDetail() {
         setSelectedStatus(response.data.status.status_id);
         setSelectedCategory(response.data.category.category_id);
         setSelectedAgent(response.data.agent.name);
+        setAttachment(response.data.attach);
       } catch (error) {
         console.log(error);
         setLoading(false);
@@ -226,6 +229,9 @@ function TicketDetail() {
           </Select>
         </Descriptions.Item>
         <Descriptions.Item label="Назначено">{ticket.agent?.username || 'Нет данных'}</Descriptions.Item>
+        <Descriptions.Item label="Вложение" span={1}>
+          {attachment && <a href={attachment} target="_blank" rel="noopener noreferrer">Скачать вложение</a>}
+        </Descriptions.Item>
         <Descriptions.Item>Создано: {ticket.created_at}, обновлено {ticket.updated_at} </Descriptions.Item>
       </Descriptions>
       <Divider>Комментарии</Divider >

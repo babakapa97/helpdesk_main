@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 import { Dropdown, Space } from 'antd';
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
@@ -42,13 +42,12 @@ function WhoLoggedIn() {
     window.location.reload();
   };
 
+  const userId = localStorage.getItem('user_id');
   const items = [
     {
       key: '1',
       label: (
-        <a target="_blank" rel="noopener noreferrer" href="">
-         Профиль
-        </a>
+        <Link to={`/user/${userId}`}>Перейти к профилю</Link>
       ),
     },
 
@@ -67,7 +66,7 @@ function WhoLoggedIn() {
       <Dropdown menu={{ items }} >
         <a onClick={(e) => e.preventDefault()}>
           <Space>
-            {first_name} {last_name} <UserOutlined  /> {/* Display the username */}
+            {first_name}{last_name}<UserOutlined  /> 
             <DownOutlined />
           </Space>
         </a>

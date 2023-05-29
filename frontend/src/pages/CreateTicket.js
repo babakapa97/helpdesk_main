@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, Form, Input, Space, Select, message } from 'antd';
+import { Button, Form, Input, Select, message, Upload } from 'antd';
+import { InboxOutlined } from '@ant-design/icons';
+
+const { Dragger } = Upload;
 
 function CreateTicket({ setTicketAdded }) {
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -8,6 +11,7 @@ function CreateTicket({ setTicketAdded }) {
   const [categories, setCategories] = useState([]);
   const access = localStorage.getItem('accessToken');
   const user_id = localStorage.getItem('user_id');
+  const [fileList, setFileList] = useState([]);
 
   useEffect(() => {
     axios.get('http://127.0.0.1:8000/api/categories/')
@@ -54,6 +58,8 @@ function CreateTicket({ setTicketAdded }) {
         });
     });
   };
+  
+  
 
   return (
     <Form
@@ -91,11 +97,31 @@ function CreateTicket({ setTicketAdded }) {
           value={selectedCategory}
           style={{ width: 315 }}
           onChange={(value) => handleChange(value, 'category_id')}
-          options={categories.map(category => ({
-            value: category.category_id.toString(),
-            label: category.name,
-          }))}
-        />
+        >
+          {categories.map(category => (
+            <Select.Option
+              key={category.category_id.toString()}
+              value={category.category_id.toString()}
+            >
+              {category.name}
+            </Select.Option>
+          ))}
+        </Select>
+      </Form.Item>
+      <Form.Item>
+        <Dragger
+          fileList={fileList}
+          onChange={({ fileList }) => setFileList(fileList)}
+          beforeUpload={() => false}
+        >
+          <p className="ant-upload-drag-icon">
+            <InboxOutlined />
+          </p>
+          <p className="ant-upload-text">Click or drag file to this area to upload</p>
+          <p className="ant-upload-hint">
+            Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned files.
+          </p>
+        </Dragger>
       </Form.Item>
       <Form.Item wrapperCol={{ offset: 8 }}>
         <Button type="primary" htmlType="submit">

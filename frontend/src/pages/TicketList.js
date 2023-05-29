@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import SearchBar from '../components/SearchBar';
 import { Table, Tag } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const TicketList = () => {
   const token = localStorage.getItem('accessToken');
@@ -66,8 +66,6 @@ const TicketList = () => {
       });
   }, [userGroup, user_id, ticketAdded]);
 
-  console.log(exportData);
-
   const handleRowClick = (record) => {
     navigate(`/tickets/${record.id}`);
   };
@@ -127,7 +125,11 @@ const TicketList = () => {
       title: 'Автор',
       dataIndex: 'author',
       key: 'author',
-      render: (author) => author && author.username,
+      render: (author) => (
+        <Link to={`/user/${author && author.id}`}>
+          {author && author.username}
+        </Link>
+      ),
     },
     {
       title: 'Назначено',
