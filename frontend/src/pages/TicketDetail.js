@@ -5,6 +5,8 @@ import { Descriptions, Select, Button, Modal, Space, Avatar, Tooltip, List, Form
 import { useNavigate } from 'react-router-dom';
 import { DeleteTwoTone, setTwoToneColor } from '@ant-design/icons'
 import { Comment } from '@ant-design/compatible';
+import { saveAs } from 'file-saver';
+
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -124,7 +126,7 @@ function TicketDetail() {
         setLoading(false);
         setSelectedStatus(response.data.status.status_id);
         setSelectedCategory(response.data.category.category_id);
-        setSelectedAgent(response.data.agent.name);
+        setSelectedAgent(response.data.agent?.username);
         setAttachment(response.data.attach);
       } catch (error) {
         console.log(error);
@@ -230,9 +232,20 @@ function TicketDetail() {
         </Descriptions.Item>
         <Descriptions.Item label="Назначено">{ticket.agent?.username || 'Нет данных'}</Descriptions.Item>
         <Descriptions.Item label="Вложение" span={1}>
-          {attachment && <a href={attachment} target="_blank" rel="noopener noreferrer">Скачать вложение</a>}
+          {attachment && (
+            <a
+              href={`http://localhost:8000${attachment}`}
+              onClick={(e) => {
+                e.preventDefault();
+                saveAs(`http://localhost:8000${attachment}`, 'attachment');
+              }}
+            >
+              Скачать вложение
+            </a>
+          )}
+
         </Descriptions.Item>
-        <Descriptions.Item>Создано: {ticket.created_at}, обновлено {ticket.updated_at} </Descriptions.Item>
+        <Descriptions.Item style={{ fontStyle: 'italic', textAlign: 'right' }}>Создано: {ticket.created_at}, обновлено {ticket.updated_at} </Descriptions.Item>
       </Descriptions>
       <Divider>Комментарии</Divider >
       <CommentList comments={comments} />

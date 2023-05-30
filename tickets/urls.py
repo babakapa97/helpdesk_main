@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import category_list, status_list, TicketCreateView, TicketViewSet, TicketDetailView, get_ticket_comments
+from .views import category_list, status_list, create_ticket, TicketViewSet, TicketDetailView, get_ticket_comments, download_file
 
 urlpatterns = [
 
@@ -7,6 +7,7 @@ urlpatterns = [
     path('api/tickets/<int:pk>/', TicketDetailView.as_view(), name='ticket_detail'),
     path('api/categories/', category_list, name='category_list'),
     path('api/status/', status_list, name='status_list'),
-    path('api/tickets/create/', TicketCreateView.as_view(), name='create_ticket'),
-    path('api/tickets/<ticket_id>/comments/', get_ticket_comments, name='ticket_comment')
+    path('api/tickets/create/', create_ticket, name='create_ticket'),
+    path('api/tickets/<ticket_id>/comments/', get_ticket_comments, name='ticket_comment'),
+    # path('files/<path:file_path>/', download_file, name='download_file'),
 ]

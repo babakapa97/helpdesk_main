@@ -13,7 +13,7 @@ from .models import Ticket, Category, Status, Comment
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
+from django.http import FileResponse
 
 #для просмотра user
 @api_view()
@@ -136,21 +136,48 @@ def status_list(request):
 #         print(serializer.errors)
 #         return JsonResponse({'status': 'error', 'message': 'Invalid data'}, status=400)
 
-class TicketCreateView(CreateAPIView):
-    serializer_class = TicketCreateSerializer
+@csrf_exempt
+def create_ticket(request):
+    try:
+        if request.method == 'POST':
+            print(request.POST)
+            print(request.FILES)
+            title = request.POST['title']
+            description = request.POST['description']
+            category_id = request.POST['category_id']
+            # Получите объект Status с status_id равным 1
+            status = Status.objects.get(status_id=1)
+            author_id = request.POST['author']
+            author = User.objects.get(id=author_id)
+            # Создайте новый тикет с полученными данными и установите значение поля status
+            ticket = Ticket.objects.create(title=title, description=description, category_id=category_id, status=status, author=author)
+            # Сохраните загруженный файл
+            if 'attach' in request.FILES:
+                file = request.FILES['attach']
+                ticket.attach.save(file.name, file)
+            # Отправьте ответ об успешном создании тикета
+            return JsonResponse({'message': 'Тикет успешно добавлен'})
+    except Exception as e:
+        # В случае ошибки верните ответ с кодом ошибки и сообщением
+        return JsonResponse({'error': str(e)}, status=500)
 
-    def create(self, request, *args, **kwargs):
-        attach = request.FILES.get('attach')  # Получаем файл из поля attach
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        ticket = serializer.save()
 
-        if attach:
-            ticket.attach = attach  # Привязываем файл к созданному тикету
-            ticket.save()
 
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+# class TicketCreateView(CreateAPIView):
+#     serializer_class = TicketCreateSerializer
+#
+#     def create(self, request, *args, **kwargs):
+#         attach = request.FILES.get('attach')  # Получаем файл из поля attach
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         ticket = serializer.save()
+#
+#         if attach:
+#             ticket.attach = attach  # Привязываем файл к созданному тикету
+#             ticket.save()
+#
+#         headers = self.get_success_headers(serializer.data)
+#         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 @csrf_exempt
 def get_ticket_comments(request, ticket_id):
@@ -180,4 +207,8 @@ def get_ticket_comments(request, ticket_id):
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
 
-
+# для скачивания файлов
+def download_file(request, file_path):
+    file = open(file_path, 'rb')
+    response = FileResponse(file)
+    return response

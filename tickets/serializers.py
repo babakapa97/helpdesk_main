@@ -117,6 +117,12 @@ class TicketViewSerializer(serializers.ModelSerializer):
     updated_at = serializers.DateTimeField(format='%d-%m-%Y %H:%M:%S', required=False)
     title = serializers.CharField(max_length=255)
     description = serializers.CharField()
+    attach = serializers.SerializerMethodField()
+
+    def get_attach(self, obj):
+        if obj.attach:
+            return obj.attach.url
+        return None
 
     class Meta:
         model = Ticket

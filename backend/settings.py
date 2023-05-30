@@ -129,6 +129,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = 'C:/Users/EVGN/PycharmProjects/helpdesk/'
+
+
 CSRF_COOKIE_NAME = "csrftoken"
 CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
 

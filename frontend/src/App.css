@@ -43,14 +43,8 @@
   justify-content: flex-end;
 }
 
-.dropzone {
-  width: 100%;
-  border: 2px dashed #ccc;
-  border-radius: 4px;
-  padding: 16px;
-  transition: border-color 0.3s ease;
-
-  &.active {
-    border-color: #1890ff;
-  }
+.centered-form-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

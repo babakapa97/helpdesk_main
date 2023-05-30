@@ -30,26 +30,27 @@ function CreateTicket({ setTicketAdded }) {
 
   const handleSubmit = () => {
     form.validateFields().then((values) => {
-      const { title, description, category_id } = values;
-
-      axios.post('http://localhost:8000/api/tickets/create/', {
+      const { title, description, category_id, author } = values;
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('description', description);
+      formData.append('category_id', category_id);
+      formData.append('author', parseInt(user_id));
+      if (fileList.length > 0) {
+        formData.append('attach', fileList[0].originFileObj);
+      }
+  
+      axios.post('http://localhost:8000/api/tickets/create/', formData, {
         headers: {
           'Authorization': `Bearer ${access}`,
-        },
-        title,
-        description,
-        category: {
-          category_id: parseInt(category_id)
-        },
-        status: {
-          status_id: '1'
-        },
-        author: parseInt(user_id)
+          'Content-Type': 'multipart/form-data'
+        }
       })
         .then((response) => {
           form.resetFields();
           setSelectedCategory('');
           setTicketAdded(true);
+          setFileList([]);
           message.success('Тикет успешно добавлен');
         })
         .catch((error) => {
@@ -59,8 +60,6 @@ function CreateTicket({ setTicketAdded }) {
     });
   };
   
-  
-
   return (
     <Form
       labelCol={{ span: 8 }}
@@ -108,7 +107,7 @@ function CreateTicket({ setTicketAdded }) {
           ))}
         </Select>
       </Form.Item>
-      <Form.Item>
+      <Form.Item style={{ width: '710px'}} >
         <Dragger
           fileList={fileList}
           onChange={({ fileList }) => setFileList(fileList)}
@@ -117,13 +116,13 @@ function CreateTicket({ setTicketAdded }) {
           <p className="ant-upload-drag-icon">
             <InboxOutlined />
           </p>
-          <p className="ant-upload-text">Click or drag file to this area to upload</p>
+          <p className="ant-upload-text">Нажмите или перетащите файл в эту область</p>
           <p className="ant-upload-hint">
-            Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned files.
+            ВНИМАНИЕ: Поддерживается загрузка только одного файла!
           </p>
         </Dragger>
       </Form.Item>
-      <Form.Item wrapperCol={{ offset: 8 }}>
+      <Form.Item wrapperCol={{ offset: 9 }}>
         <Button type="primary" htmlType="submit">
           Отправить
         </Button>
