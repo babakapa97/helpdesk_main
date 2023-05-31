@@ -164,8 +164,8 @@ function TicketDetail() {
 
   const handleDelete = () => {
     Modal.confirm({
-      title: 'Удаление тикета',
-      content: 'Вы уверены, что хотите удалить этот тикет?',
+      title: 'Удаление заявки',
+      content: 'Вы уверены, что хотите удалить заявку?',
       okText: 'Удалить',
       cancelText: 'Отмена',
       onOk: async () => {

@@ -66,7 +66,6 @@ class UserDetailView(RetrieveAPIView):
 class TicketDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Ticket.objects.all()
     serializer_class = TicketViewSerializer
-    
 
 
 #обновление данных тикета
@@ -112,8 +111,10 @@ class TicketDetailView(RetrieveUpdateDestroyAPIView):
             ticket_id = ticket.id
             title = ticket.title
             category = ticket.category
-            status = ticket.status
-            send_message_about_update_ticket(ticket_id, title, category, status)
+            ticket_status = ticket.status
+            agent = ticket.agent
+            send_message_about_update_ticket(ticket_id, title, category, ticket_status, agent)
+
         return Response(status=status.HTTP_200_OK)
 
 
@@ -164,16 +165,15 @@ def create_ticket(request):
                 file = request.FILES['attach']
                 ticket.attach.save(file.name, file)
 
-            # Получение ID созданного тикета, категории и названия
-                ticket_id = ticket.id
-                title = ticket.title
-                category = ticket.category.name
-
             # Отправка сообщения в канал
-            send_message_about_new_ticket(ticket_id, title, category)
+            send_message_about_new_ticket(ticket.id, ticket.title, ticket.category.name)
 
             # Отправьте ответ об успешном создании тикета
             return JsonResponse({'message': 'Тикет успешно добавлен'})
+        else:
+            # Возвращаем ответ, что только метод POST разрешен
+            return JsonResponse({'error': 'Метод не разрешен'}, status=405)
+
     except Exception as e:
         # В случае ошибки верните ответ с кодом ошибки и сообщением
         return JsonResponse({'error': str(e)}, status=500)

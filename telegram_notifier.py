@@ -35,9 +35,9 @@ def send_message_about_new_comment(ticket_id, title, category, comment, author):
     else:
         print('Ошибка при отправке сообщения в канал')
 
-def send_message_about_update_ticket(ticket_id, title, category, status):
+def send_message_about_update_ticket(ticket_id, title, category, status, agent):
 
-    message = f'Обновлена заявка #{ticket_id}\nНазвание: {title}\nКатегория: {category}\nСтатус: {status}'
+    message = f'Обновлена заявка #{ticket_id}\nНазвание: {title}\nКатегория: {category}\nСтатус: {status}\nНазначено: {agent}'
     url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
     params = {
         'chat_id': channel_chat_id,
