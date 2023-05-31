@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Descriptions, Select, Button, Modal, Space, Avatar, Tooltip, List, Form, Input, Divider } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { DeleteTwoTone, setTwoToneColor } from '@ant-design/icons'
+import { DeleteTwoTone, setTwoToneColor, UserAddOutlined } from '@ant-design/icons'
 import { Comment } from '@ant-design/compatible';
 import { saveAs } from 'file-saver';
 
@@ -15,6 +15,7 @@ setTwoToneColor('#eb2f96');
 
 function TicketDetail() {
   const author = localStorage.getItem('user_id');
+  const user = localStorage.getItem('current_user');
   const navigate = useNavigate();
   const [selectedAgent, setSelectedAgent] = useState('');
   const [ticket, setTicket] = useState(null);
@@ -101,7 +102,6 @@ function TicketDetail() {
   const handleCommentSubmit = async () => {
     try {
       const commentText = form.getFieldValue('commentText'); // Получить значение комментария из формы
-      console.log(commentText); // Переместите эту строку после объявления commentText
       const response = await axios.post(`http://localhost:8000/api/tickets/${id}/comments/`, {
         content: commentText,
         author: author
@@ -179,6 +179,24 @@ function TicketDetail() {
     });
   };
 
+  // Обработчик назначения агента
+  const handleAssignAgent = () => {
+    const assignData = {
+      agent_id: author
+    };
+
+    axios.put(`http://localhost:8000/api/tickets/${id}/`, assignData)
+      .then(response => {
+        setTicket(response.data);
+        setSelectedAgent('');
+        setShowAlert(true);
+        window.location.reload();
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
   const CommentList = ({ comments }) => (
     <List
       dataSource={comments}
@@ -211,8 +229,18 @@ function TicketDetail() {
         layout="vertical"
         extra={
           <>
-            <Space><Button type="default" danger onClick={handleDelete} >Удалить <DeleteTwoTone /></Button>
-              <Button type="primary" onClick={handleSave}>Сохранить</Button></Space></>}>
+            <Space>
+              <Button
+                type="default"
+                danger
+                onClick={handleDelete}
+                disabled={user !== ticket.author.username && user !== 'admin'} 
+              >
+                Удалить <DeleteTwoTone />
+              </Button>
+              <Button type="primary" onClick={handleSave}>Сохранить</Button>
+            </Space>
+          </>}>
         <Descriptions.Item label="Название" span={1}>{ticket.title}</Descriptions.Item>
         <Descriptions.Item label="Описание" span={1}>{ticket.description}</Descriptions.Item>
         <Descriptions.Item label="Автор">{ticket.author ? ticket.author.username : 'Нет данных'}</Descriptions.Item>
@@ -230,7 +258,14 @@ function TicketDetail() {
             ))}
           </Select>
         </Descriptions.Item>
-        <Descriptions.Item label="Назначено">{ticket.agent?.username || 'Нет данных'}</Descriptions.Item>
+        <Descriptions.Item label="Назначено">
+          <Space>
+            {ticket.agent?.username || 'Нет данных'}
+            <Tooltip title="Назначить себе">
+              <Button type="primary" size='small' disabled={ticket.author.username === user} onClick={handleAssignAgent}><UserAddOutlined /></Button>
+            </Tooltip>
+          </Space>
+        </Descriptions.Item>
         <Descriptions.Item label="Вложение" span={1}>
           {attachment && (
             <a

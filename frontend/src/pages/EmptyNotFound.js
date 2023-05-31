@@ -1,8 +1,9 @@
+import { Skeleton } from 'antd';
 
 function EmptyPageNotFound () {
  return(
 
-    <p>Раздел в разработке.</p>
+   <Skeleton active />
  )
 
 }
