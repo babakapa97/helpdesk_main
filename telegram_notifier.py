@@ -35,7 +35,6 @@ def send_message_about_new_comment(ticket_id, title, category, comment, author):
     else:
         print('Ошибка при отправке сообщения в канал')
 
-
 def send_message_about_update_ticket(ticket_id, title, category, status):
 
     message = f'Обновлена заявка #{ticket_id}\nНазвание: {title}\nКатегория: {category}\nСтатус: {status}'
