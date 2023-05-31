@@ -14,6 +14,7 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import FileResponse
+from telegram_notifier import send_message_about_new_ticket, send_message_about_new_comment, send_message_about_update_ticket
 
 #для просмотра user
 @api_view()
@@ -107,6 +108,12 @@ class TicketDetailView(RetrieveUpdateDestroyAPIView):
             ticket.agent_id = data.get('agent_id', ticket.agent_id)
             ticket.save()
 
+            #для уведомления
+            ticket_id = ticket.id
+            title = ticket.title
+            category = ticket.category
+            status = ticket.status
+            send_message_about_update_ticket(ticket_id, title, category, status)
         return Response(status=status.HTTP_200_OK)
 
 
@@ -150,17 +157,26 @@ def create_ticket(request):
             author_id = request.POST['author']
             author = User.objects.get(id=author_id)
             # Создайте новый тикет с полученными данными и установите значение поля status
-            ticket = Ticket.objects.create(title=title, description=description, category_id=category_id, status=status, author=author)
+            ticket = Ticket.objects.create(title=title, description=description, category_id=category_id, status=status,
+                                           author=author)
             # Сохраните загруженный файл
             if 'attach' in request.FILES:
                 file = request.FILES['attach']
                 ticket.attach.save(file.name, file)
+
+            # Получение ID созданного тикета, категории и названия
+                ticket_id = ticket.id
+                title = ticket.title
+                category = ticket.category.name
+
+            # Отправка сообщения в канал
+            send_message_about_new_ticket(ticket_id, title, category)
+
             # Отправьте ответ об успешном создании тикета
             return JsonResponse({'message': 'Тикет успешно добавлен'})
     except Exception as e:
         # В случае ошибки верните ответ с кодом ошибки и сообщением
         return JsonResponse({'error': str(e)}, status=500)
-
 
 
 # class TicketCreateView(CreateAPIView):
@@ -201,6 +217,14 @@ def get_ticket_comments(request, ticket_id):
                 author_id=author,
             )
             new_comment.save()
+
+            #для уведомлений
+            ticket = Ticket.objects.get(id=ticket_id)
+            title = ticket.title
+            category = ticket.category.name
+            comment = new_comment.content
+            author = new_comment.author
+            send_message_about_new_comment(ticket_id, title, category, comment, author)
             return JsonResponse({'message': 'Comment created successfully'})
         else:
             return JsonResponse({'error': 'Content cannot be empty'}, status=400)

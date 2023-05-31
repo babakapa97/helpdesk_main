@@ -9,5 +9,4 @@ urlpatterns = [
     path('api/status/', status_list, name='status_list'),
     path('api/tickets/create/', create_ticket, name='create_ticket'),
     path('api/tickets/<ticket_id>/comments/', get_ticket_comments, name='ticket_comment'),
-    # path('files/<path:file_path>/', download_file, name='download_file'),
 ]
