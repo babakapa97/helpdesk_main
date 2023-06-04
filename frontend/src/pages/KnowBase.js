@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Tree } from 'antd';
+import { FileOutlined, FolderOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 
 const { DirectoryTree } = Tree;
 
@@ -9,75 +11,63 @@ function KnowBase() {
   const access = localStorage.getItem('accessToken');
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/api/knowbase/', {
-      headers: {
-        Authorization: `Bearer ${access}`
-      }
-    })
-      .then(response => {
+    axios
+      .get('http://localhost:8000/api/knowbase/', {
+        headers: {
+          Authorization: `Bearer ${access}`,
+        },
+      })
+      .then((response) => {
         const data = response.data;
         const groupedData = groupItemsBySection(data);
-        const updatedTreeData = convertToTreeData(groupedData);
-        setTreeData(updatedTreeData);
+        const convertedData = convertToTreeData(groupedData);
+        setTreeData(convertedData);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   }, [access]);
 
-  // Группирует элементы по секциям
   const groupItemsBySection = (data) => {
-    const groupedData = {
-      FAQ: [],
-      Инструкции: [],
-      Кейсы: []
-    };
+    const groupedData = {};
 
-    data.forEach(item => {
+    data.forEach((item) => {
+      if (!groupedData[item.section]) {
+        groupedData[item.section] = [];
+      }
       groupedData[item.section].push(item);
     });
 
     return groupedData;
   };
 
-  // Преобразует группированные данные в структуру дерева
   const convertToTreeData = (groupedData) => {
-    const treeData = [];
-
-    Object.entries(groupedData).forEach(([section, items]) => {
-      const sectionNode = {
-        key: section,
+    return Object.entries(groupedData).map(([section, items]) => {
+      const folderNode = {
         title: section,
-        children: items.map(item => ({
+        key: section,
+        icon: <FolderOutlined />,
+        children: items.map((item) => ({
+          title: <Link to={`http://localhost:3000/knowbase/${item.id}/`}>{item.title}</Link>,
           key: item.id,
-          title: item.title
-        }))
+          isLeaf: true,
+          icon: <FileOutlined style={{ color: '#1890ff' }} />,
+        })),
       };
 
-      treeData.push(sectionNode);
+      return folderNode;
     });
-
-    return treeData;
-  };
-
-  const onSelect = (keys, info) => {
-    console.log('Trigger Select', keys, info);
-  };
-
-  const onExpand = (keys, info) => {
-    console.log('Trigger Expand', keys, info);
   };
 
   return (
-    <div>
+    <d>
+      <h2>База знаний</h2>
       <DirectoryTree
         multiple
         defaultExpandAll
-        onSelect={onSelect}
-        onExpand={onExpand}
         treeData={treeData}
       />
-    </div>
+    </d>
   );
 }
 

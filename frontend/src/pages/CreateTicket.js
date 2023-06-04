@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, Form, Input, Select, message, Upload } from 'antd';
+import { Button, Form, Input, Select, message, Upload, Divider } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 
 const { Dragger } = Upload;
 
@@ -12,6 +13,8 @@ function CreateTicket({ setTicketAdded }) {
   const access = localStorage.getItem('accessToken');
   const user_id = localStorage.getItem('user_id');
   const [fileList, setFileList] = useState([]);
+  const [searchResults, setSearchResults] = useState([]); // Инициализация searchResults с пустым массивом
+
 
   useEffect(() => {
     axios.get('http://127.0.0.1:8000/api/categories/')
@@ -39,10 +42,11 @@ function CreateTicket({ setTicketAdded }) {
       if (fileList.length > 0) {
         formData.append('attach', fileList[0].originFileObj);
       }
-  
+
+      //добавление тикета
       axios.post('http://localhost:8000/api/tickets/create/', formData, {
         headers: {
-          'Authorization': `Bearer ${access}`,
+          // 'Authorization': `Bearer ${access}`,
           'Content-Type': 'multipart/form-data'
         }
       })
@@ -59,75 +63,110 @@ function CreateTicket({ setTicketAdded }) {
         });
     });
   };
-  
+
+  // Функция для выполнения запроса к API поиска
+  const searchAPI = async (query) => {
+    try {
+      const response = await axios.get(`http://localhost:8000/api/knowbase/?search_query=${query}`);
+      return response.data; // Вернуть результаты поиска
+    } catch (error) {
+      console.error(error);
+      return []; // В случае ошибки вернуть пустой массив
+    }
+  };
+
+  // Обработчик события при изменении значения в поле описания
+  const handleDescriptionChange = async (e) => {
+    const query = e.target.value; // Получение значения поля описания
+
+    if (query.trim() === '') {
+      setSearchResults([]); // Очистка результатов поиска, если поле описания пустое
+      return;
+    }
+    const results = await searchAPI(query); // Выполнение поиска через API
+
+    setSearchResults(results); // Установка результатов поиска в состояние
+  };
+
   return (
-    <Form
-      labelCol={{ span: 8 }}
-      wrapperCol={{ span: 16 }}
-      form={form}
-      onFinish={handleSubmit}
-    >
-      <Form.Item
-        name="title"
-        label="Название заявки"
-        rules={[
-          {
-            required: true,
-            message: 'Введите заголовок заявки!',
-          },
-        ]}
+    <div>
+      <Form
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 16 }}
+        form={form}
+        onFinish={handleSubmit}
       >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        name="description"
-        label="Описание"
-        rules={[
-          {
-            required: true,
-            message: 'Введите описание заявки!',
-          },
-        ]}
-      >
-        <Input.TextArea />
-      </Form.Item>
-      <Form.Item label="Выберите категорию" name="category_id">
-        <Select
-          value={selectedCategory}
-          style={{ width: 315 }}
-          onChange={(value) => handleChange(value, 'category_id')}
+        <Form.Item
+          name="title"
+          label="Название заявки"
+          onChange={handleDescriptionChange}
+          rules={[
+            {
+              required: true,
+              message: 'Введите заголовок заявки!',
+            },
+          ]}
         >
-          {categories.map(category => (
-            <Select.Option
-              key={category.category_id.toString()}
-              value={category.category_id.toString()}
-            >
-              {category.name}
-            </Select.Option>
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name="description"
+          label="Описание"
+          rules={[
+            {
+              required: true,
+              message: 'Введите описание заявки!',
+            },
+          ]}
+        >
+          <Input.TextArea />
+        </Form.Item>
+        <Form.Item label="Выберите категорию" name="category_id">
+          <Select
+            value={selectedCategory}
+            style={{ width: 315 }}
+            onChange={(value) => handleChange(value, 'category_id')}
+          >
+            {categories.map(category => (
+              <Select.Option
+                key={category.category_id.toString()}
+                value={category.category_id.toString()}
+              >
+                {category.name}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+        {searchResults.length > 0 && <Divider orientation="left">Возможно, вас заинтересует</Divider>}
+        <ul>
+          {searchResults.map((result) => (
+            <li key={result.id}>
+              <Link to={`http://localhost:3000/knowbase/${result.id}`} target="_blank">{result.title}</Link>
+            </li>
           ))}
-        </Select>
-      </Form.Item>
-      <Form.Item style={{ width: '710px'}} >
-        <Dragger
-          fileList={fileList}
-          onChange={({ fileList }) => setFileList(fileList)}
-          beforeUpload={() => false}
-        >
-          <p className="ant-upload-drag-icon">
-            <InboxOutlined />
-          </p>
-          <p className="ant-upload-text">Нажмите или перетащите файл в эту область</p>
-          <p className="ant-upload-hint">
-            ВНИМАНИЕ: Поддерживается загрузка только одного файла!
-          </p>
-        </Dragger>
-      </Form.Item>
-      <Form.Item wrapperCol={{ offset: 9 }}>
-        <Button type="primary" htmlType="submit">
-          Отправить
-        </Button>
-      </Form.Item>
-    </Form>
+        </ul>
+        <Form.Item style={{ width: '710px' }} >
+          <Dragger
+            fileList={fileList}
+            onChange={({ fileList }) => setFileList(fileList)}
+            beforeUpload={() => false}
+          >
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">Нажмите или перетащите файл в эту область</p>
+            <p className="ant-upload-hint">
+              ВНИМАНИЕ: Поддерживается загрузка только одного файла!
+            </p>
+          </Dragger>
+        </Form.Item>
+        <Form.Item wrapperCol={{ offset: 9 }}>
+          <Button type="primary" htmlType="submit">
+            Отправить
+          </Button>
+        </Form.Item>
+      </Form>
+    </div>
   );
 }
 

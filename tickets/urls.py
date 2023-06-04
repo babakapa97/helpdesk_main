@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import category_list, status_list, create_ticket, TicketViewSet, TicketDetailView, get_ticket_comments, download_file
+from .views import category_list, status_list, create_ticket, TicketViewSet, TicketDetailView, get_ticket_comments
 
 urlpatterns = [
 

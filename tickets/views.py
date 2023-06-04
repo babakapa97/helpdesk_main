@@ -179,22 +179,6 @@ def create_ticket(request):
         return JsonResponse({'error': str(e)}, status=500)
 
 
-# class TicketCreateView(CreateAPIView):
-#     serializer_class = TicketCreateSerializer
-#
-#     def create(self, request, *args, **kwargs):
-#         attach = request.FILES.get('attach')  # Получаем файл из поля attach
-#         serializer = self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         ticket = serializer.save()
-#
-#         if attach:
-#             ticket.attach = attach  # Привязываем файл к созданному тикету
-#             ticket.save()
-#
-#         headers = self.get_success_headers(serializer.data)
-#         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
 @csrf_exempt
 def get_ticket_comments(request, ticket_id):
     if request.method == 'GET':

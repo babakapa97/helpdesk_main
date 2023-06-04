@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import SearchBar from '../components/SearchBar';
-import { Table, Tag } from 'antd';
+import { Table, Tag, Tooltip } from 'antd';
 import { useNavigate, Link } from 'react-router-dom';
 
 const TicketList = () => {
@@ -12,7 +12,7 @@ const TicketList = () => {
   const navigate = useNavigate();
   const [exportData, setExportData] = useState([]);
   const [ticketAdded, setTicketAdded] = useState(false);
-  
+
 
   // Запрос к API для получения информации о пользователе
   useEffect(() => {
@@ -38,7 +38,7 @@ const TicketList = () => {
         const filteredTickets = response.data.filter(ticket => {
           // Здесь нужно определить условие фильтрации 
           if (userGroup.includes('СOD') || user_id === ticket.author.id.toString()) {
-            return ticket.category.category_id === 2 || ticket.category.category_id === 4 || ticket.category.category_id === 5 || ticket.author.id.toString() === user_id;          
+            return ticket.category.category_id === 2 || ticket.category.category_id === 4 || ticket.category.category_id === 5 || ticket.author.id.toString() === user_id;
           } else if (userGroup.includes('OIB') || user_id === ticket.author.id.toString()) {
             return ticket.category.category_id === 3 || ticket.author.id.toString() === user_id;
           } else if (userGroup.includes('INFO') || userGroup.includes('PROG') || user_id === ticket.author.id.toString()) {
@@ -59,7 +59,7 @@ const TicketList = () => {
           Автор: ticket.author.username,
           Дата_создания: ticket.created_at,
         })));
-        
+
       })
       .catch(error => {
         console.error('Невозможно показать тикеты:', error);
@@ -126,9 +126,11 @@ const TicketList = () => {
       dataIndex: 'author',
       key: 'author',
       render: (author) => (
+        <Tooltip title="Информация об авторе">
         <Link to={`/user/${author && author.id}`}>
           {author && author.username}
         </Link>
+        </Tooltip>
       ),
     },
     {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Descriptions, Select, Button, Modal, Space, Avatar, Tooltip, List, Form, Input, Divider } from 'antd';
+import { Descriptions, Select, Button, Modal, Space, Skeleton, Tooltip, List, Form, Input, Divider } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { DeleteTwoTone, setTwoToneColor, UserAddOutlined } from '@ant-design/icons'
 import { Comment } from '@ant-design/compatible';
@@ -217,7 +217,7 @@ function TicketDetail() {
 
 
   if (!ticket) {
-    return <p>Заявка недоступна.</p>;
+    return <p><Skeleton active /></p>;
   }
 
   return (
