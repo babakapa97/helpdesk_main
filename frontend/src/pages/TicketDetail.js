@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { Descriptions, Select, Button, Modal, Space, Skeleton, Tooltip, List, Form, Input, Divider } from 'antd';
 import { useNavigate } from 'react-router-dom';
@@ -182,7 +182,8 @@ function TicketDetail() {
   // Обработчик назначения агента
   const handleAssignAgent = () => {
     const assignData = {
-      agent_id: author
+      agent_id: author,
+      status_id: '2'
     };
 
     axios.put(`http://localhost:8000/api/tickets/${id}/`, assignData)
@@ -234,7 +235,7 @@ function TicketDetail() {
                 type="default"
                 danger
                 onClick={handleDelete}
-                disabled={user !== ticket.author.username && user !== 'admin'} 
+                disabled={user !== ticket.author.username && user !== 'admin'}
               >
                 Удалить <DeleteTwoTone />
               </Button>
@@ -243,7 +244,13 @@ function TicketDetail() {
           </>}>
         <Descriptions.Item label="Название" span={1}>{ticket.title}</Descriptions.Item>
         <Descriptions.Item label="Описание" span={1}>{ticket.description}</Descriptions.Item>
-        <Descriptions.Item label="Автор">{ticket.author ? ticket.author.username : 'Нет данных'}</Descriptions.Item>
+        <Descriptions.Item label="Автор">
+          {ticket.author ? (
+            <Link to={`/user/${ticket.author.id}`}>{ticket.author.username}</Link>
+          ) : (
+            'Нет данных'
+          )}
+        </Descriptions.Item>
         <Descriptions.Item label="Статус">
           <Select value={selectedStatus} onChange={handleChangeStatus}>
             {status.map(s => (

@@ -6,7 +6,6 @@
     "@ant-design/compatible": "^5.1.1",
     "@ant-design/icons": "^5.1.0",
     "@ant-design/plots": "^1.2.5",
-    "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",

@@ -36,12 +36,13 @@ function SearchBar({ setTicketAdded }) {
       <h2>Список заявок</h2>
       <Space wrap>
             <Button type="primary" onClick={showModal}>Создать заявку</Button>
+            <Input.Search placeholder="Поиск" className='search'/>
       </Space>
       <Modal title="Новая заявка" okButtonProps={{ style: { display: 'none' } }} cancelButtonProps={{ style: { display: 'none' } }}
         open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         <CreateTicket setTicketAdded={setTicketAdded} />
       </Modal>
-      {/* <ExportButton /> */}
+      
     </>
   );
 }

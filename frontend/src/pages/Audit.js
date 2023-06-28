@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table } from 'antd';
+import { Table, Input } from 'antd';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
@@ -75,6 +75,7 @@ const DeviceList = () => {
     return (
         <div>
             <h2>Список АРМ</h2>
+            <Input.Search placeholder="Поиск" />
             <Table dataSource={updatedDevices} columns={columns} />
         </div>
     );

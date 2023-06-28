@@ -1,11 +1,11 @@
-import { Divider, Typography, Skeleton, Space } from 'antd';
+import { Typography, Skeleton } from 'antd';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import React from 'react';
 import { saveAs } from 'file-saver';
 
-const { Title, Paragraph, Text, Link } = Typography;
+const { Title, Paragraph, Text } = Typography;
 
 const KnowbaseDetail = () => {
     const [data, setData] = useState(null);
